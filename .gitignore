@@ -7,6 +7,7 @@ Figure_9_Table_5/checkpointing/HS/data/*
 **.csv
 **.txt
 **compile_log.txt
-Figure_9_Table_5/native/BFS/input
 GPMBench_LibGPM/checkpointing/HS/data/power_16384
 GPMBench_LibGPM/checkpointing/HS/data/temp_16384
+Figure_1/Figure_1b/bfs/input/
+GPMBench_LibGPM/native/BFS/input/
