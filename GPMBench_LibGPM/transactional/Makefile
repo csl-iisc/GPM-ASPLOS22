@@ -51,24 +51,24 @@ out_figure_9:
 	cat out_figure9.txt;
 	
 out_table_5:
-	echo "" > result_table_5.txt;
+	echo "" > out_table5.txt;
 	
 	time_gpm=$$(grep "Runtime" results/kvs_gpm.txt | grep -oE "[0-9]+\.[0-9]+");     \
 	time_recov=$$(grep "Recovery" results/kvs_gpm_rest.txt | grep -oE "[0-9]+\.[0-9]+");     \
 	time=$$(awk "BEGIN {print $${time_recov}/$${time_gpm}}"); \
-	echo "KVS\t$${time}" >> result_table_5.txt;
+	echo "KVS\t$${time}" >> out_table5.txt;
 	
 	time_gpm=$$(grep "InsertTime" results/gpDB_gpm.txt | grep -oE "[0-9]+\.[0-9]+");     \
 	time_recov=$$(grep "InsertRecovery" results/gpDB_gpm_rest.txt | grep -oE "[0-9]+\.[0-9]+");     \
 	time=$$(awk "BEGIN {print $${time_recov}/$${time_gpm}}"); \
-	echo "gpDB_I\t$${time}" >> result_table_5.txt;
+	echo "gpDB_I\t$${time}" >> out_table5.txt;
 	
 	time_gpm=$$(grep "UpdateTime" results/gpDB_gpm.txt | grep -oE "[0-9]+\.[0-9]+");     \
 	time_recov=$$(grep "UpdateRecovery" results/gpDB_gpm_rest.txt | grep -oE "[0-9]+\.[0-9]+");     \
 	time=$$(awk "BEGIN {print $${time_recov}/$${time_gpm}}"); \
-	echo "gpDB_U\t$${time}" >> result_table_5.txt;
+	echo "gpDB_U\t$${time}" >> out_table5.txt;
 	
-	cat result_table_5.txt;
+	cat out_table5.txt;
 	
 figure_9:
 	$(MAKE) run_all TYPES="_gpm _fs_gpu _mm_gpu";

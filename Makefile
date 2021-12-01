@@ -25,8 +25,12 @@ out_figure1:
 out_figure9:
 	mkdir -p reports/
 	cd ${folder}; $(MAKE) out_figure_9;
-	mv GPMBench_LibGPM/out_figure9.txt reports/
+	mv GPMBench_LibGPM/out_figure9.txt reports/;
+	cat reports/out_figure9.txt
 	
 out_table_5:
+	mkdir -p reports/
 	cd ${folder}; $(MAKE) out_table_5;
+	mv GPMBench_LibGPM/out_table5.txt reports/;
+	cat reports/out_table5.txt
 	

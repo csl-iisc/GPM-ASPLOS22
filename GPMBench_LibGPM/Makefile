@@ -1,4 +1,5 @@
 folders ?= transactional checkpointing native
+rest_folders ?= transactional checkpointing 
 
 figure_9:
 	for i in ${folders}; do \
@@ -24,8 +25,10 @@ out_figure_9:
 	done
 	
 out_table_5:
-	for i in ${folders}; do \
+	touch out_table5.txt; \
+	for i in ${rest_folders}; do \
 		cd $$i; \
 		$(MAKE) out_table_5; \
+		cat out_table5.txt >> ../out_table5.txt; \
 		cd ..; \
 	done

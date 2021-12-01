@@ -1,4 +1,4 @@
-apps ?= HS DNN CFD BLK HS
+apps ?= HS DNN CFD BLK 
 CP_ITERS ?= 10
 
 run_all:
@@ -15,14 +15,14 @@ out_figure_9:
 	
 	
 out_table_5:
-	echo "" > result_table_5.txt; 
+	echo "" > out_table5.txt; 
 	for i in ${apps}; do                                            \
 		time_gpm=$$(grep "CheckpointTime" results/$${i}_${CP_ITERS}_gpm.txt | grep -oE "[0-9]+\.[0-9]+");     \
 		time_recov=$$(grep "Recovery" results/$${i}_${CP_ITERS}_gpm_rest.txt | grep -oE "[0-9]+\.[0-9]+");     \
 		time=$$(awk "BEGIN {print $${time_recov}/$${time_gpm}}"); \
-		echo "$$i\t$${time}" >> result_table_5.txt; \
+		echo "$$i\t$${time}" >> out_table5.txt; \
 	done
-	cat result_table_5.txt;
+	cat out_table5.txt;
 	
 	
 figure_9:
