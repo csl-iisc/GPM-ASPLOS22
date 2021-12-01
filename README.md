@@ -16,7 +16,7 @@ The following steps are required to reproduce the results, along with the expect
  1. **Setting up PMEM [~10 minutes]**
  2. **Setting up cuDNN [~15 minutes]**
  3. **Replicating Figure 1 [~40 + 30 minutes]**
- 4. **Replicating Figure 9 [~70 minutes]**
+ 4. **Replicating Figure 9 [~120 minutes]**
  5. **Replicating Table 5 [~7 minutes]**
 
 
