@@ -1,0 +1,13 @@
+*results*
+*logs*
+*NVM_LOG
+*/matrixkv/logs/*
+*build*
+Figure_9_Table_5/checkpointing/HS/data/*
+**.csv
+**compile_log.txt
+Figure_9_Table_5/native/BFS/input
+**.txt
+**out**
+GPMBench_LibGPM/native/BFS/input
+Figure_1/Figure_1b/BFS/input
