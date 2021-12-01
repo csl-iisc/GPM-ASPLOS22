@@ -1,0 +1,2 @@
+rocksdb/bin/rocksdb filter=lfs diff=lfs merge=lfs -text
+matrixkv/bin/matrixkv filter=lfs diff=lfs merge=lfs -text
