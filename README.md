@@ -97,6 +97,9 @@ This folder contains 7 files, which we explain below:
 * libgpmcp.cuh - Contains the relevant implementation of checkpointing in GPM.
 * bandwidth_analysis.cuh - Contains helper definitions used for bandwidth measurement.
 * gpm-annotations.cuh - Contains helper functions used to calculate write amplification.
-* change-ddio.h - Contains functions to turn DDIO off and on. [cite]
-* gpm-helper.cuh - 
+* change-ddio.h - Contains functions to turn DDIO off and on. [1]
+* gpm-helper.cuh - Contains common helper functions needed across other files.
 
+
+References: 
+[1] Characterizing and Optimizing Remote Persistent Memory with RDMA and NVM. Authors: Xingda Wei and Xiating Xie and Rong Chen and Haibo Chen and Binyu Zang. Published in: Usenix ATC'2021
