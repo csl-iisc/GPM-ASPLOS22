@@ -66,7 +66,7 @@ Raw outputs and run times will be contained in the results folder in Figure1/Fig
 Final normalized results will be outputted in the terminal and are also contained in the reports/ folder as a tab-separated format. This can be imported into a spreadsheet of your choice to generate the appropriate figure.
 
 
-**Figure 9 [~70 minutes]**     
+**Figure 9 [~120 minutes]**     
 Run the following command in the main repository folder:
 ```
 make figure_9
