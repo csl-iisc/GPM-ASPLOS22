@@ -37,10 +37,10 @@ all: start
 	$(MAKE) build CP_ITER=10;
 
 generate_input: 
-	cd data/
-	./hotspotex
-	./hotspotver 
-	cd ..
+	cd data/; \
+	./hotspotex; \
+	./hotspotver; \
+	cd ..;
 
 build: ${BUILD}/hotspot_${CP_ITER}_gpm #${BUILD}/hotspot_${CP_ITER}_gpm_ndp ${BUILD}/hotspot_${CP_ITER}_fs_gpu ${BUILD}/hotspot_${CP_ITER}_mm_gpu ${BUILD}/hotspot_${CP_ITER}_gpm_rest #${BUILD}/hotspot_${CP_ITER}_volatile  ${BUILD}/hotspot_${CP_ITER}_gpm_near ${BUILD}/hotspot_${CP_ITER}_gpm_debug 
 

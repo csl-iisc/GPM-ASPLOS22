@@ -24,7 +24,7 @@ all: start
 
 build: ${BUILD}/lenet_${CP_ITER}_gpm ${BUILD}/lenet_${CP_ITER}_gpm_ndp ${BUILD}/lenet_${CP_ITER}_fs_gpu ${BUILD}/lenet_${CP_ITER}_mm_gpu ${BUILD}/lenet_${CP_ITER}_gpm_rest #${BUILD}/lenet_${CP_ITER}_volatile ${BUILD}/lenet_${CP_ITER}_gpm_near ${BUILD}/lenet_${CP_ITER}_gpm_debug 
 
-TYPES ?= _gpm _mm_gpu _fs_gpu _gpm_ndp _gpm_rest _gpufs _gpufs
+TYPES ?= _gpm _mm_gpu _fs_gpu _gpm_ndp _gpm_rest _gpufs 
 
 run_all:
 	make all CP_ITER=${CP_ITER};
