@@ -11,7 +11,7 @@ for app in ${APPS[@]}; do \
     capmm_speedup=$(echo "scale=3; ${capfs_time}/${capmm_time}" | bc); \
     gpm_speedup=$(echo "scale=3; ${capfs_time}/${gpm_time}" | bc); \
     if [[ "$app" == "DNN" || "$app" == "CFD" ]]; then \
-        gpufs_time=$(grep "CheckpointTime" results/${app}_${CP_ITER}_gpm.txt | grep -oE "[0-9]+\.[0-9]+"); \
+        gpufs_time=$(grep "CheckpointTime" results/${app}_${CP_ITER}_gpufs.txt | grep -oE "[0-9]+\.[0-9]+"); \
         gpufs_speedup=$(echo "scale=3; ${capfs_time}/${gpufs_time}" | bc); \
         echo -e  "${app}\t${capfs_time}\t${capmm_time}\t${capmm_speedup}\t${gpm_time}\t${gpm_speedup}\t${gpufs_time}\t${gpufs_speedup}" >> out_figure9.txt; \
     else \
