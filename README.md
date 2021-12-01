@@ -1,15 +1,23 @@
-# GPM: <ins>G</ins>PU with <ins>P</ins>ersistent <ins>M</ins>emory
-In GPM, we propose that GPUs leverage the persistent properties of NVM.
-We provide the code for the different applications in GPMBench along with the source code of libGPM. 
-We first describe the steps to reproduce results followed by a short explanation of the source library.
+# GPM: <ins>G</ins>PU with <ins>P</ins>ersistent <ins>M</ins>emory 
+GPM is a system which allows a GPU to leverage Persistent Memory and enables writing highly performant recoverable GPU applications.
+The repository contains the source of our benchmark suite: GPMBench and a CUDA library: LibGPM. 
+GPMBench comprises of 9 benchmarks categorized as transactional, native and checkpointing. 
+LibGPM contains the source of our CUDA library which provides a user-friendly interface for GPU-accelerated recoverable applications. 
+More details about the work can be found in our paper ASPLOS'22 paper: Leveraging Persistent Memory from a GPU. 
+The artifact also allows a user to reproduce some of the key results published in the paper.
+These key results include: 
+1. Figure 1: Benefits of GPM over CPU with PM. 
+2. Figure 9: Benefits ofGPMover CPU with PM.
+3. Table 5: Restoration latency (RL) in GPM. 
+
 
 ## Steps to setup and replicate results
-The following are the steps required to reproduce the results, along with the expected run time. All commands should be run in the main repository folder.
+The following steps are required to reproduce the results, along with the expected run time. All commands should be run in the main repository folder.
  1. **Setting up PMEM [~10 minutes]**
  2. **Setting up cuDNN [~15 minutes]**
  3. **Replicating Figure 1 [~40 + 30 minutes]**
  4. **Replicating Figure 9 [~70 minutes]**
- 5. **Replicating Table 5 [~X minutes]**
+ 5. **Replicating Table 5 [~7 minutes]**
 
 
 ## Setting up PMEM [~10 minutes]
@@ -28,8 +36,8 @@ exit
 ```
 
 ## Setting up cuDNN [~15 minutes]
-Download CuDNNv8.2 for CUDA 11.0.2 from Nvidia's website.
-One can find the CuDNNv8.2 libraries at: https://developer.nvidia.com/rdp/cudnn-archive
+Download CuDNN 8.2 for CUDA 11.X from Nvidia's website.
+One can find the CuDNN 8.2 libraries at: https://developer.nvidia.com/rdp/cudnn-archive
 Follow the instructions from: https://docs.nvidia.com/deeplearning/cudnn/archives/cudnn_800_ea/cudnn-install/index.html#download to complete installation. 
 
 More specifically - 
@@ -46,40 +54,40 @@ sudo dpkg -i libcudnn8-doc_8.x.x.x.x-1+cudax.x_amd64.deb
 ## Replicating primary results (Figures and Tables)
 We provide the scripts required to compile and generate the results contained in the paper.
 
-**Figure 1 [~X minutes]**    
+**Figure 1 [~40 + 30 minutes]**    
 Run the following command in the main repository folder:
 ```
 make figure_1
 ```
 This will run the appropriate benchmarks and measure the run time.    
 
-Raw outputs and run times will be contained in *X*.
+Raw outputs and run times will be contained in the results folder in Figure1/Figure1a and Figure1/Figure1b.
 
-Final normalized results will be outputted in the terminal and are also contained at *X* in tab-separated format. This can be imported into a spreadsheet of your choice to generate the appropriate figure.
+Final normalized results will be outputted in the terminal and are also contained in the reports/ folder as a tab-separated format. This can be imported into a spreadsheet of your choice to generate the appropriate figure.
 
 
-**Figure 9 [~X minutes]**     
+**Figure 9 [~70 minutes]**     
 Run the following command in the main repository folder:
 ```
 make figure_9
 ```
 This will run the benchmarks for GPM and CAP and measure the run time. 
 
-Raw outputs will be kept in *X*.
+Raw outputs will be kept in individual results folders that can be obtained in GPMbench_LibGPM/transactional, GPMBench_LibGPM/checkpointing and GPMBench_LibGPM/native.
 
-Final normalized results will be outputted in the terminal and are also contained at *X* in tab-separated format. This can be imported into a spreadsheet of your choice to generate the appropriate figure.
+Final normalized results will be outputted in the terminal and are also contained at reports/ in tab-separated format. This can be imported into a spreadsheet of your choice to generate the appropriate figure.
 
 
-**Table 5 [~X minutes]**     
+**Table 5 [~7 minutes]**     
 Run the following command in the main repository folder:
 ```
 make table_5
 ```
 This will run the crash-recovery kernels for GPM benchmarks and measure their time. 
 
-Raw outputs will be kept in *X*.
+Raw outputs will be kept in results folder in GPMbench_LibGPM/transactional, GPMBench_LibGPM/checkpointing and GPMBench_LibGPM/native.
 
-Final normalized results will be outputted in the terminal and are also contained at *X* in tab-separated format.
+Final normalized results will be outputted in the terminal and are also contained at reports/ in tab-separated format.
 
 ## Source code
 The relevant source code for libGPM can be found in "[GPMBench_LibGPM/libgpm/include](/GPMBench_LibGPM/libgpm/include)".
