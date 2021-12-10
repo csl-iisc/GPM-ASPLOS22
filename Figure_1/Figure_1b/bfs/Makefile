@@ -6,7 +6,7 @@ RUNS         ?= 1
 
 run:
 	mkdir -p ../results/
-	#./process_input.sh
+	./process_input.sh
 	for runs in `seq 1 1 ${RUNS}`; do \
 		for file in ${BENCHMARKS}; do \
 			echo "" > ../results/$${runs}_$${file}.raw; \
