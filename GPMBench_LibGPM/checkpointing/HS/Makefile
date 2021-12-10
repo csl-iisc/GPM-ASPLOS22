@@ -42,7 +42,7 @@ generate_input:
 	./hotspotver; \
 	cd ..;
 
-build: ${BUILD}/hotspot_${CP_ITER}_gpm #${BUILD}/hotspot_${CP_ITER}_gpm_ndp ${BUILD}/hotspot_${CP_ITER}_fs_gpu ${BUILD}/hotspot_${CP_ITER}_mm_gpu ${BUILD}/hotspot_${CP_ITER}_gpm_rest #${BUILD}/hotspot_${CP_ITER}_volatile  ${BUILD}/hotspot_${CP_ITER}_gpm_near ${BUILD}/hotspot_${CP_ITER}_gpm_debug 
+build: ${BUILD}/hotspot_${CP_ITER}_gpm ${BUILD}/hotspot_${CP_ITER}_gpm_ndp ${BUILD}/hotspot_${CP_ITER}_fs_gpu ${BUILD}/hotspot_${CP_ITER}_mm_gpu ${BUILD}/hotspot_${CP_ITER}_gpm_rest #${BUILD}/hotspot_${CP_ITER}_volatile  ${BUILD}/hotspot_${CP_ITER}_gpm_near ${BUILD}/hotspot_${CP_ITER}_gpm_debug 
 
 TYPES ?= _gpm _mm_gpu _fs_gpu _gpm_ndp _gpm_rest
 

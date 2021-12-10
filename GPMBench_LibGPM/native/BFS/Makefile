@@ -71,7 +71,7 @@ all:
 start:
 	mkdir -p ${BUILD}
 	mkdir -p input/ 
-	#./process_input.sh
+	./process_input.sh
 
 build: ${BUILD}/BFS_mm_gpu ${BUILD}/BFS_fs_gpu ${BUILD}/BFS_gpm #${BUILD}/BFS_volatile ${BUILD}/BFS_gpm_near ${BUILD}/BFS_gpm_wdp ${BUILD}/BFS_gpm_debug ${BUILD}/BFS_pure_cpu
 
