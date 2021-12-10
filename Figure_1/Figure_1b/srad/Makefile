@@ -1,4 +1,4 @@
-BENCHMARKS   ?= srad_gpm srad_cpu 
+BENCHMARKS   ?= srad_cpu srad_gpm 
 RUNS         ?= 1
 
 
