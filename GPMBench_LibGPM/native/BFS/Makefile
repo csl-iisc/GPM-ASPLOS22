@@ -68,12 +68,16 @@ all:
 	$(MAKE) start
 	$(MAKE) build; 
 
+run_fig_10: 
+	sudo PMEM_THREADS=32 ${BUILD}/BFS_gpm_ndp > ../results/BFS_gpm_ndp.txt;
+
+
 start:
 	mkdir -p ${BUILD}
 	mkdir -p input/ 
-	./process_input.sh
+	#./process_input.sh
 
-build: ${BUILD}/BFS_mm_gpu ${BUILD}/BFS_fs_gpu ${BUILD}/BFS_gpm #${BUILD}/BFS_volatile ${BUILD}/BFS_gpm_near ${BUILD}/BFS_gpm_wdp ${BUILD}/BFS_gpm_debug ${BUILD}/BFS_pure_cpu
+build: ${BUILD}/BFS_mm_gpu ${BUILD}/BFS_fs_gpu ${BUILD}/BFS_gpm ${BUILD}/BFS_gpm_ndp #${BUILD}/BFS_volatile ${BUILD}/BFS_gpm_near ${BUILD}/BFS_gpm_debug ${BUILD}/BFS_pure_cpu
 
 ${BUILD}/BFS_mm_gpu: ./src/main_mm.cu ./src/kernel_mm.cu
 	$(CXX) $(CXX_FLAGS) $(SRC_MM) $(INC) -o $@
@@ -90,7 +94,7 @@ ${BUILD}/BFS_gpm: $(SRC)
 ${BUILD}/BFS_gpm_debug: $(SRC)
 	$(CXX) -DNVM_ALLOC_CPU $(CXX_FLAGS) $(SRC) $(INC) -o $@ -DOUTPUT_NVM_DETAILS
 
-${BUILD}/BFS_gpm_wdp: $(SRC)
+${BUILD}/BFS_gpm_ndp: $(SRC)
 	$(CXX) -DNVM_ALLOC_CPU $(CXX_FLAGS) $(SRC) $(INC) -o $@ -DGPM_WDP
 
 ${BUILD}/BFS_gpm_near: $(SRC)

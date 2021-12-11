@@ -305,7 +305,7 @@ all: start build
 start:
 	mkdir -p build
 
-build: ${BUILD}/PS_gpm ${BUILD}/PS_fs_gpu ${BUILD}/PS_mm_gpu #${BUILD}/PS_gpm_wdp ${BUILD}/PS_gpm_near  ${BUILD}/PS_gpm_default ${BUILD}/PS_volatile ${BUILD}/PS_pure_cpu
+build: ${BUILD}/PS_gpm ${BUILD}/PS_fs_gpu ${BUILD}/PS_mm_gpu ${BUILD}/PS_gpm_ndp #${BUILD}/PS_gpm_near  ${BUILD}/PS_gpm_default ${BUILD}/PS_volatile ${BUILD}/PS_pure_cpu
 
 TYPES ?= _gpm _fs_gpu _mm_gpu
 
@@ -313,6 +313,10 @@ run_all:
 	make all;
 	mkdir -p ../results;
 	for i in ${TYPES}; do sudo PMEM_THREADS=32 ${BUILD}/PS$$i > ../results/PS$$i.txt; done
+
+run_fig_10: 
+	sudo PMEM_THREADS=32 ${BUILD}/PS_gpm_ndp > ../results/PS_gpm_ndp.txt;
+
 
 check.deps:
 ifeq ($(SAMPLE_ENABLED),0)
@@ -339,10 +343,10 @@ ${BUILD}/PS_gpm.o: ./src/PS.cu
 ${BUILD}/PS_gpm: ${BUILD}/PS_gpm.o
 	$(EXEC) $(NVCC) $(ALL_LDFLAGS) $(GENCODE_FLAGS) -o $@ $+ $(LIBRARIES)
 
-${BUILD}/PS_gpm_wdp.o: ./src/PS.cu
+${BUILD}/PS_gpm_ndp.o: ./src/PS.cu
 	$(EXEC)$(NVCC) $(INCLUDES) -DEMULATE_NVM -DNVM_ALLOC_CPU -DGPM_WDP $(ALL_CCFLAGS) $(GENCODE_FLAGS) -o $@ -c $<
 
-${BUILD}/PS_gpm_wdp: ${BUILD}/PS_gpm_wdp.o
+${BUILD}/PS_gpm_ndp: ${BUILD}/PS_gpm_ndp.o
 	$(EXEC) $(NVCC) $(ALL_LDFLAGS) $(GENCODE_FLAGS) -o $@ $+ $(LIBRARIES)
 
 ${BUILD}/PS_fs_gpu.o: ./src/PS_fs.cu

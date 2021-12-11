@@ -30,7 +30,7 @@ BUILD = ./build
 
 #EXE = srad
 
-all: start ${BUILD}/SRAD_fs_gpu ${BUILD}/SRAD_mm_gpu ${BUILD}/SRAD_gpm #${BUILD}/srad_gpm_wdp ${BUILD}/srad_gpm_near ${BUILD}/srad_volatile ${BUILD}/srad_gpm_debug ${BUILD}/srad_pure_cpu
+all: start ${BUILD}/SRAD_fs_gpu ${BUILD}/SRAD_mm_gpu ${BUILD}/SRAD_gpm ${BUILD}/SRAD_gpm_ndp # ${BUILD}/srad_gpm_near ${BUILD}/srad_volatile ${BUILD}/srad_gpm_debug ${BUILD}/srad_pure_cpu
 
 TYPES ?= _gpm _fs_gpu _mm_gpu _gpufs
 
@@ -38,6 +38,9 @@ run_all:
 	make all;
 	mkdir -p ../results;
 	for i in ${TYPES}; do sudo PMEM_THREADS=32 ${BUILD}/SRAD$$i 131072 1024 0 31 0 31 0.5 50 > ../results/SRAD$$i.txt; done
+
+run_fig_10: 
+	sudo PMEM_THREADS=32 ${BUILD}/SRAD_gpm_ndp 131072 1024 0 31 0 31 0.5 50 > ../results/SRAD_gpm_ndp.txt;
 
 start:
 	mkdir -p ${BUILD}
@@ -54,7 +57,7 @@ ${BUILD}/SRAD_gpm: ./src/srad.cu ./src/srad_kernel.cu
 ${BUILD}/srad_pure_cpu: ./src/srad_cpu.cu
 	$(CC) $(KERNEL_DIM) $(NVCC_FLAGS) $< -o $@ -I$(INCLUDE) -I$(PMEM_INC) -L$(CUDA_LIB_DIR) -DNVM_ALLOC_CPU -DEMULATE_NVM
 
-${BUILD}/srad_gpm_wdp: ./src/srad.cu ./src/srad_kernel.cu
+${BUILD}/SRAD_gpm_ndp: ./src/srad.cu ./src/srad_kernel.cu
 	$(CC) $(KERNEL_DIM) $(NVCC_FLAGS) $< -o $@ -I$(INCLUDE) -I$(PMEM_INC) -L$(CUDA_LIB_DIR) -DNVM_ALLOC_CPU -DEMULATE_NVM -DGPM_WDP
 
 ${BUILD}/srad_volatile: ./src/srad.cu ./src/srad_kernel.cu
