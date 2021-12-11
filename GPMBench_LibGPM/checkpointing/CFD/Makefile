@@ -41,6 +41,9 @@ run_all:
 		sudo PMEM_THREADS=32 ${BUILD}/CFD_${CP_ITER}$$i data/missile.domn.0.2M > ../results/CFD_${CP_ITER}$$i.txt; \
 	done
 
+run_fig_10:
+	sudo PMEM_THREADS=32 ${BUILD}/CFD_${CP_ITER}_gpm_ndp > ../results/CFD_${CP_ITER}_gpm_ndp.txt;
+
 build:  ${BUILD}/CFD_${CP_ITER}_gpm ${BUILD}/CFD_${CP_ITER}_gpm_ndp ${BUILD}/CFD_${CP_ITER}_fs_gpu ${BUILD}/CFD_${CP_ITER}_mm_gpu ${BUILD}/CFD_${CP_ITER}_gpm_rest #${BUILD}/CFD_${CP_ITER}_gpm_debug ${BUILD}/CFD_${CP_ITER}_volatile ${BUILD}/CFD_${CP_ITER}_gpm_near #${BUILD}/CFD_${CP_ITER}_mm_tx_gpu
 
 start:

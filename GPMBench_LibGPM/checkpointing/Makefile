@@ -1,4 +1,4 @@
-apps ?= HS DNN CFD BLK 
+apps ?= DNN CFD BLK #HS 
 CP_ITERS ?= 10
 
 run_all:
@@ -8,12 +8,26 @@ run_all:
 		cd ..; \
 	done
 	
+run_fig10:
+	for i in ${apps}; do \
+		cd $$i; \
+		make run_fig_10 CP_ITERS=${CP_ITERS}; \
+		cd ..; \
+	done
+	
+
 out_figure_9:
 	rm -f out_figure9.txt; 
 	./run.sh;
 	cat out_figure9.txt;
 	
-	
+out_figure_10:
+	echo "" > out_figure10.txt; 
+	for i in ${apps}; do                                            \
+		time_gpm_ndp=$$(grep "CheckpointTime" results/$${i}_${CP_ITERS}_gpm.txt | grep -oE "[0-9]+\.[0-9]+");     \
+		echo "$$i\t$${time_gpm_ndp}" >> out_figure10.txt; \
+	done
+
 out_table_5:
 	echo "" > out_table5.txt; 
 	for i in ${apps}; do                                            \
@@ -32,3 +46,6 @@ figure_9:
 table_5:
 	$(MAKE) run_all TYPES="_gpm _gpm_rest";
 	$(MAKE) out_table_5;	
+
+figure_10:
+	$(MAKE) run_fig10;
