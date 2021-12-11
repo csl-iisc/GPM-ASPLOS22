@@ -109,12 +109,12 @@ run_all:
 		sudo PMEM_THREADS=32 ${BUILD}/kvs_get_set$$i > ../results/kvs_gs$$i.txt; \
 	done
 
-#run_rest:
-#	make all;
-#	mkdir -p ../results;
-#	for i in ${TYPES}; do \
-#		sudo PMEM_THREADS=32 ${BUILD}/kvs$$i > ../results/kvs$$i.txt; \
-#	done
+run_rest:
+	make all;
+	mkdir -p ../results;
+	for i in _gpm _gpm_rest; do \
+		sudo PMEM_THREADS=32 ${BUILD}/kvs$$i > ../results/kvs$$i.txt; \
+	done
 
 start:
 	mkdir -p ${BUILD}

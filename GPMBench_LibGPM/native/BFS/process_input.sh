@@ -1,3 +1,4 @@
+mkdir -p input/
 cd input/
 wget http://www.diag.uniroma1.it//challenge9/data/USA-road-d/USA-road-d.USA.gr.gz
 gunzip USA-road-d.USA.gr.gz
