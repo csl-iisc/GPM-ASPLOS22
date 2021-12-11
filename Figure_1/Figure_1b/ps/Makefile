@@ -1,4 +1,4 @@
-BENCHMARKS   ?= ps_gpm #ps_cpu 
+BENCHMARKS   ?= ps_gpm ps_cpu 
 RUNS         ?= 1
 
 

@@ -1,4 +1,4 @@
-BENCHMARKS   ?= bfs_cpu #bfs_gpm 
+BENCHMARKS   ?= bfs_cpu bfs_gpm 
 RUNS         ?= 1
 
 
