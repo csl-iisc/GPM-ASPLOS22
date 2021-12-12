@@ -306,7 +306,7 @@ run_all:
 	done
 
 run_fig_10: 
-	sudo PMEM_THREADS=32 ${BUILD}/BLK_${CP_ITER}_gpm_ndp > ../results/BLK_${CP_ITER}_gpm_ndp.txt; 
+	sudo ${BUILD}/BLK_${CP_ITER}_gpm_ndp > ../results/BLK_${CP_ITER}_gpm_ndp.txt; 
 
 ${BUILD}/BLK_${CP_ITER}_mm_gpu: ${SRC}/blackScholes_mm.cu ${SRC}/blackScholes_gold.cpp
 	$(EXEC) $(NVCC) -DCP_ITER=${CP_ITER} $(ALL_LDFLAGS) $(INCLUDES) $(GENCODE_FLAGS) -o $@ $+ $(LIBRARIES)

@@ -44,7 +44,7 @@ generate_input:
 
 build: ${BUILD}/hotspot_${CP_ITER}_gpm ${BUILD}/hotspot_${CP_ITER}_gpm_ndp ${BUILD}/hotspot_${CP_ITER}_fs_gpu ${BUILD}/hotspot_${CP_ITER}_mm_gpu ${BUILD}/hotspot_${CP_ITER}_gpm_rest #${BUILD}/hotspot_${CP_ITER}_volatile  ${BUILD}/hotspot_${CP_ITER}_gpm_near ${BUILD}/hotspot_${CP_ITER}_gpm_debug 
 
-TYPES ?= _gpm _mm_gpu _fs_gpu _gpm_ndp _gpm_rest
+TYPES ?= _gpm _mm_gpu _fs_gpu _gpm_rest
 
 run_all:
 	make generate_input;
@@ -55,7 +55,7 @@ run_all:
 	done
 
 run_fig_10: 
-	sudo PMEM_THREADS=32 ${BUILD}/hotspot_${CP_ITER}_gpm_ndp > ../results/HS_${CP_ITER}_gpm_ndp.txt;
+	sudo ${BUILD}/hotspot_${CP_ITER}_gpm_ndp > ../results/HS_${CP_ITER}_gpm_ndp.txt;
 
 start:
 	mkdir -p ${BUILD}

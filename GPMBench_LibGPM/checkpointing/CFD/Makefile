@@ -42,7 +42,7 @@ run_all:
 	done
 
 run_fig_10:
-	sudo PMEM_THREADS=32 ${BUILD}/CFD_${CP_ITER}_gpm_ndp > ../results/CFD_${CP_ITER}_gpm_ndp.txt;
+	sudo ${BUILD}/CFD_${CP_ITER}_gpm_ndp data/missile.domn.0.2M > ../results/CFD_${CP_ITER}_gpm_ndp.txt;
 
 build:  ${BUILD}/CFD_${CP_ITER}_gpm ${BUILD}/CFD_${CP_ITER}_gpm_ndp ${BUILD}/CFD_${CP_ITER}_fs_gpu ${BUILD}/CFD_${CP_ITER}_mm_gpu ${BUILD}/CFD_${CP_ITER}_gpm_rest #${BUILD}/CFD_${CP_ITER}_gpm_debug ${BUILD}/CFD_${CP_ITER}_volatile ${BUILD}/CFD_${CP_ITER}_gpm_near #${BUILD}/CFD_${CP_ITER}_mm_tx_gpu
 
@@ -72,6 +72,10 @@ ${BUILD}/CFD_${CP_ITER}_gpm_near: ${SRC}/CFD.cu
 
 ${BUILD}/CFD_${CP_ITER}_volatile: ${SRC}/CFD.cu
 	$(CC) $(KERNEL_DIM) $(CC_FLAGS) $? -o $@ -I$(CUDA_SDK_PATH)/common/inc -I$(PMEM_INC) -L$(CUDA_DIR)/lib $(CUTIL_LIB) -DCP_ITER=${CP_ITER} -DNVM_ALLOC_CPU -DFAKE_NVM
+
 clean:
 	rm -f *.linkinfo
-	rm -f ${BUILD}/* !("CFD_10_gpufs")
+	mv ${BUILD}/CFD_10_gpufs . 
+	rm -rf ${BUILD}/ #!("lenet_10_gpufs")
+	mkdir -p ${BUILD}
+	mv CFD_10_gpufs ${BUILD}/

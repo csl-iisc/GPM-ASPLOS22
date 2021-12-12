@@ -34,7 +34,7 @@ run_all:
 	done
 
 run_fig_10: 
-	sudo PMEM_THREADS=32 ${BUILD}/lenet_${CP_ITER}_gpm_ndp > ../results/DNN_${CP_ITER}_gpm_ndp.txt;
+	sudo ${BUILD}/lenet_${CP_ITER}_gpm_ndp > ../results/DNN_${CP_ITER}_gpm_ndp.txt;
 
 
 start:
