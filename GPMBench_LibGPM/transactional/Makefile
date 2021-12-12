@@ -70,6 +70,22 @@ out_table_5:
 	
 	cat out_table5.txt;
 	
+ndp_apps=kvs kvs_gs
+
+out_figure_10:
+	echo "" > out_figure10.txt;
+	for i in ${ndp_apps}; do                                            \
+		time_gpm_ndp=$$(grep "Runtime" results/$${i}_gpm_ndp.txt | grep -oE "[0-9]+\.[0-9]+");     \
+		time_gpm_ndp_persist=$$(grep "PersistTime" results/$${i}_gpm_ndp.txt | grep -oE "[0-9]+\.[0-9]+");     \
+		time_capfs=$$(grep "Runtime" results/$${i}_fs_gpu.txt | grep -oE "[0-9]+\.[0-9]+");     \
+		time_capmm_persist=$$(grep "PersistTime" results/$${i}_mm_gpu.txt | grep -oE "[0-9]+\.[0-9]+");     \
+		speedup_gpm_ndp=$$(awk "BEGIN {print $${time_capfs}/$${time_gpm_ndp}}"); \
+		echo "$$i\t$${time_gpm_ndp}\t$${time_gpm_ndp_persist}\t$${speedup_gpm_ndp}\t$${time_capmm_persist}" >> out_figure10.txt; \
+	done
+	cat out_figure10.txt
+
+
+
 figure_9:
 	$(MAKE) run_all TYPES="_gpm _fs_gpu _mm_gpu";
 	$(MAKE) out_figure_9;
