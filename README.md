@@ -23,6 +23,7 @@ The following steps are required to reproduce the results, along with the expect
 ## Setting up PMEM [~10 minutes]
 This section explains how to setup your NVDIMM config to be run in app direct mode. This also makes sure that all the PMEM strips are interleaved to attain maximum bandwidth. 
 1. Install all the dependencies to support PMEM
+`chmod +x dependencies.sh`
 `sudo ./dependencies.sh`
 2. Run the teardown script to tear down any older PMEM configuration. 
 `sudo ./pmem-setup/teardown.bashrc`
