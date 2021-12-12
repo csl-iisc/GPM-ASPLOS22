@@ -40,7 +40,7 @@ run_all:
 	for i in ${TYPES}; do sudo PMEM_THREADS=32 ${BUILD}/SRAD$$i 131072 1024 0 31 0 31 0.5 50 > ../results/SRAD$$i.txt; done
 
 run_fig_10: 
-	sudo PMEM_THREADS=32 ${BUILD}/SRAD_gpm_ndp 131072 1024 0 31 0 31 0.5 50 > ../results/SRAD_gpm_ndp.txt;
+	sudo ${BUILD}/SRAD_gpm_ndp 131072 1024 0 31 0 31 0.5 50 > ../results/SRAD_gpm_ndp.txt;
 
 start:
 	mkdir -p ${BUILD}
@@ -79,5 +79,8 @@ debugenum: ${SRC}/srad.cu
 	$(CC) $(KERNEL_DIM) -g -deviceemu $(SRC) -o $(EXE) -I$(INCLUDE) -L$(CUDA_LIB_DIR) 
 
 clean:
-	rm -f $(EXE) $(EXE).linkinfo result.txt
-	rm -f ${BUILD}/*
+	rm -f *.linkinfo
+	mv ${BUILD}/SRAD_gpufs . 
+	rm -rf ${BUILD}/ #!("SRAD_10_gpufs")
+	mkdir -p ${BUILD}
+	mv SRAD_gpufs ${BUILD}/

@@ -242,7 +242,7 @@ void runTest( int argc, char** argv)
         cudaDeviceSynchronize();
         printf("Operation time: %f ms\n", (double)kernel_time);
         printf("DDIO time: %f ms\n", (double)ddio_time);
-        printf("Persist time: %f ms\n", (double)persist_time);
+        printf("PersistTime: %f ms\n", (double)persist_time);
         printf("memcpy_time: %f ms\n", (double)memcpy_time);
         runtime = kernel_time + persist_time;
         printf("runtime: %f ms\n", runtime);

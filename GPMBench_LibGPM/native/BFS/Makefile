@@ -69,7 +69,7 @@ all:
 	$(MAKE) build; 
 
 run_fig_10: 
-	sudo PMEM_THREADS=32 ${BUILD}/BFS_gpm_ndp > ../results/BFS_gpm_ndp.txt;
+	sudo ${BUILD}/BFS_gpm_ndp > ../results/BFS_gpm_ndp.txt;
 
 
 start:
