@@ -26,7 +26,7 @@ out_table_5:
 	
 	
 figure_9:
-	$(MAKE) run_all TYPES="_gpm _fs_gpu _mm_gpu";
+	$(MAKE) run_all; #TYPES="_gpm _fs_gpu _mm_gpu";
 	$(MAKE) out_figure_9;
 	
 table_5:
