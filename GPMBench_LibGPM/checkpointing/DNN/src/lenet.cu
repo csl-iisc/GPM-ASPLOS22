@@ -1061,7 +1061,8 @@ int main(int argc, char **argv)
             context.UpdateWeights(learningRate, conv1, conv2,
                     d_pconv1, d_pconv1bias, d_pconv2, d_pconv2bias, d_pfc1, d_pfc1bias, d_pfc2, d_pfc2bias,
                     d_gconv1, d_gconv1bias, d_gconv2, d_gconv2bias, d_gfc1, d_gfc1bias, d_gfc2, d_gfc2bias);
-            //START_BW_MONITOR2("bw_gpm_cudnn.csv"); 
+            START_BW_MONITOR2("bw_DNN.dat"); 
+            for(int i=0; i<1000; ++i) {
             if (iter%CP_ITER == CP_ITER-1) {
                 checkCudaErrors(cudaDeviceSynchronize());
                 auto start = std::chrono::high_resolution_clock::now();
@@ -1079,7 +1080,8 @@ int main(int argc, char **argv)
                 checkCudaErrors(cudaDeviceSynchronize());
                 timings += std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now() - start).count();
             }
-            //STOP_BW_MONITOR
+            }
+            STOP_BW_MONITOR
             //OUTPUT_STATS
             checkCudaErrors(cudaDeviceSynchronize());
 

@@ -24,6 +24,8 @@ out_table_5:
 	done
 	cat out_table5.txt;
 	
+out_figure_12: 
+	./extract_bw.sh; cat out_figure12.txt;
 	
 figure_9:
 	$(MAKE) run_all; #TYPES="_gpm _fs_gpu _mm_gpu";

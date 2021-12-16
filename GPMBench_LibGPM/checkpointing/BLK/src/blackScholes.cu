@@ -210,11 +210,11 @@ int main(int argc, char **argv)
 #ifdef GPM_WDP
 //                START_BW_MONITOR2("bw_gpm-wdp_blackScholes.csv"); 
 #else
-//                START_BW_MONITOR2("bw_gpm_blackScholes.csv");
+                START_BW_MONITOR2("bw_BLK.dat");
 #endif 
                 gpmcp_checkpoint(cp_blackScholes, 0);
 //                OUTPUT_STATS
-//                STOP_BW_MONITOR
+                STOP_BW_MONITOR
             }
             getLastCudaError("BlackScholesGPU() execution failed\n");
         }

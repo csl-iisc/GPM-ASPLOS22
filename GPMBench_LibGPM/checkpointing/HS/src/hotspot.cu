@@ -253,7 +253,7 @@ int compute_tran_temp(float *MatrixPower,float *MatrixTemp[2], int col, int row,
 
     int src = 1, dst = 0;
 
-	//START_BW_MONITOR2("bw_gpm_hotspot.csv"); 
+	START_BW_MONITOR2("bw_HS.dat"); 
 	for (int t = 0; t < total_iterations; t+=num_iterations) {
             int temp = src;
             src = dst;
@@ -269,7 +269,7 @@ int compute_tran_temp(float *MatrixPower,float *MatrixTemp[2], int col, int row,
 		}
         //OUTPUT_STATS
 	}
-    //STOP_BW_MONITOR 
+    STOP_BW_MONITOR 
     return dst;
 }
 

@@ -25,7 +25,7 @@ double persist_time = 0;
 #ifndef CP_ITER
     #define CP_ITER 10 
 #endif
-#define iterations 5000
+#define iterations 500
 #ifndef RESTORE_FLAG
 const bool     RECOVER    = false;
 #else
@@ -643,7 +643,8 @@ int main(int argc, char** argv)
                 getLastCudaError("time_step failed");	
             }
             cudaDeviceSynchronize();
-            //START_BW_MONITOR2("bw_gpm_cfd.csv"); 
+            START_BW_MONITOR2("bw_CFD.dat"); 
+            for(int i=0; i<1000; ++i) {
             timer3 += std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now() - start1).count();
             if (i % CP_ITER == CP_ITER - 1) {
                 auto cp_start_time = std::chrono::high_resolution_clock::now();
@@ -656,7 +657,8 @@ int main(int argc, char** argv)
                 gpuErrchk(cudaGetLastError());
                 timer2 += std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now() - cp_start_time).count();
             }
-            //STOP_BW_MONITOR
+            }
+            STOP_BW_MONITOR
             //OUTPUT_STATS
         }
 

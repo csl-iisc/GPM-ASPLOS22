@@ -46,6 +46,12 @@ build:  ${BUILD}/CFD_${CP_ITER}_gpm ${BUILD}/CFD_${CP_ITER}_gpm_ndp ${BUILD}/CFD
 start:
 	mkdir -p ${BUILD}
 
+run_bw:
+	make ${BUILD}/CFD_${CP_ITER}_gpm;
+	sudo ${BUILD}/CFD_${CP_ITER}_gpm data/missile.domn.0.2M
+
+
+
 ${BUILD}/CFD_${CP_ITER}_gpm: ${SRC}/CFD.cu
 	$(CC) $(KERNEL_DIM) $(CC_FLAGS) $? -o $@ -I$(CUDA_SDK_PATH)/common/inc -I$(PMEM_INC) -L$(CUDA_DIR)/lib $(CUTIL_LIB) -DNVM_ALLOC_CPU -DCP_ITER=${CP_ITER}
 
