@@ -314,6 +314,10 @@ run_all:
 	mkdir -p ../results;
 	for i in ${TYPES}; do sudo PMEM_THREADS=32 ${BUILD}/PS$$i > ../results/PS$$i.txt; done
 
+run_bw:
+	make ${BUILD}/PS_gpm;
+	sudo ${BUILD}/PS_gpm
+
 check.deps:
 ifeq ($(SAMPLE_ENABLED),0)
 	@echo "Sample will be waived due to the above missing dependencies"

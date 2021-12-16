@@ -73,6 +73,11 @@ start:
 	mkdir -p input/ 
 	./process_input.sh
 
+
+run_bw:
+	make ${BUILD}/BFS_gpm;
+	sudo ${BUILD}/BFS_gpm
+
 build: ${BUILD}/BFS_mm_gpu ${BUILD}/BFS_fs_gpu ${BUILD}/BFS_gpm #${BUILD}/BFS_volatile ${BUILD}/BFS_gpm_near ${BUILD}/BFS_gpm_wdp ${BUILD}/BFS_gpm_debug ${BUILD}/BFS_pure_cpu
 
 ${BUILD}/BFS_mm_gpu: ./src/main_mm.cu ./src/kernel_mm.cu

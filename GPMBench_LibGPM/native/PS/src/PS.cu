@@ -331,7 +331,7 @@ bool shuffle_simple_test(int argc, char **argv)
     #endif
     operation_time += (double)time_val(TIME_NOW - start1).count() / 1000.0f;
 
-    //START_BW_MONITOR2("bw_gpm_scan.csv");
+    START_BW_MONITOR2("bw_PS.dat");
     bool success = true;
     for(int iter = 0; iter < n_arrays; ++iter) {
         auto start1 = TIME_NOW;
@@ -353,7 +353,7 @@ bool shuffle_simple_test(int argc, char **argv)
         //if(!CPUverify(h_data, h_result, n_elements))
         //    success = false;
     }
-    //STOP_BW_MONITOR
+    STOP_BW_MONITOR
     OUTPUT_STATS
     
     printf("Successful? %s; ", success ? "True" : "False");

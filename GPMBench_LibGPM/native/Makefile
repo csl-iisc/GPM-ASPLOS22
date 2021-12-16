@@ -10,6 +10,10 @@ run_all:
 out_figure_9:
 	./run.sh; cat out_figure9.txt;
 	
+out_figure_12:
+	./extract_bw.sh; cat out_figure12.txt;
+
+
 figure_9:
 	$(MAKE) run_all;
 	$(MAKE) out_figure_9;

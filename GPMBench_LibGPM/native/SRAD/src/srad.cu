@@ -185,7 +185,7 @@ void runTest( int argc, char** argv)
 			setMemory<<<1, 1024>>>(C_cuda, size_I, -1.0);
 			setMemory<<<1, 1024>>>(J_cuda_out, size_I, -1.0);
             // Reinit for every iteration
-            printf("%d: Copy finished\n", iter);
+            //printf("%d: Copy finished\n", iter);
             
             cudaDeviceSynchronize();
 
@@ -199,15 +199,17 @@ void runTest( int argc, char** argv)
             //Copy data from main memory to device memory
 
             //Run kernels
-            //START_BW_MONITOR2("bw_srad_gpm.csv");
         	start = std::chrono::high_resolution_clock::now(); 
+            START_BW_MONITOR2("bw_SRAD.dat");
+            for(int i=0; i<10; ++i) {
             srad_cuda_1<<<dimGrid, dimBlock>>>(E_C, W_C, N_C, S_C, J_cuda, C_cuda, cols, rows, q0sqr); 
             srad_cuda_2<<<dimGrid, dimBlock>>>(E_C, W_C, N_C, S_C, J_cuda, C_cuda, cols, rows, lambda, q0sqr, J_cuda_out); 
             cudaDeviceSynchronize();
+            }
+            STOP_BW_MONITOR
             kernel_time += (double)std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now() - start).count() / 1000.0;
-            printf("Time: %f\n", kernel_time);
-    		OUTPUT_STATS
-            //STOP_BW_MONITOR
+            //printf("Time: %f\n", kernel_time);
+    		//OUTPUT_STATS
             //OUTPUT_STATS
 #ifdef GPM_WDP
             start = std::chrono::high_resolution_clock::now(); 

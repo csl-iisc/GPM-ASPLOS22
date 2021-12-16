@@ -396,7 +396,7 @@ int main(int argc, char **argv) {
             cleanup = 1;
         }
 		//Turn DDIO off here 
-		//START_BW_MONITOR2("bw_gpm_bfs.csv")
+		START_BW_MONITOR2("bw_BFS.dat")
 #if defined(NVM_ALLOC_CPU) && !defined(FAKE_NVM) && !defined(GPM_WDP)
 		start = std::chrono::high_resolution_clock::now(); 
 		ddio_off(); 
@@ -456,7 +456,7 @@ int main(int argc, char **argv) {
 		    h_tail = 0;
 		    h_head = 0;
 		}
-		//STOP_BW_MONITOR
+		STOP_BW_MONITOR
 		cudaMemcpy(h_cost, d_cost, sizeof(int) * n_nodes, cudaMemcpyDeviceToHost); 
 		cudaMemcpy(h_q1, d_q1, sizeof(int) * n_nodes, cudaMemcpyDeviceToHost); 
 		cudaMemcpy(h_q2, d_q2, sizeof(int) * n_nodes, cudaMemcpyDeviceToHost); 

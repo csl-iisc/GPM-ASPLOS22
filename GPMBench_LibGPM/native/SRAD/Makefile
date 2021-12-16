@@ -39,6 +39,11 @@ run_all:
 	mkdir -p ../results;
 	for i in ${TYPES}; do sudo PMEM_THREADS=32 ${BUILD}/SRAD$$i 131072 1024 0 31 0 31 0.5 50 > ../results/SRAD$$i.txt; done
 
+
+run_bw:
+	make ${BUILD}/SRAD_gpm;
+	sudo ${BUILD}/SRAD_gpm 131072 1024 0 31 0 31 0.5 10; 
+
 start:
 	mkdir -p ${BUILD}
 
