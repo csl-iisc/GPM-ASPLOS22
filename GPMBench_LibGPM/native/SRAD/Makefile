@@ -40,6 +40,7 @@ run_all:
 	for i in ${TYPES}; do sudo PMEM_THREADS=32 ${BUILD}/SRAD$$i 131072 1024 0 31 0 31 0.5 50 > ../results/SRAD$$i.txt; done
 
 run_fig_10: 
+	make all;
 	sudo ${BUILD}/SRAD_gpm_ndp 131072 1024 0 31 0 31 0.5 50 > ../results/SRAD_gpm_ndp.txt;
 
 start:

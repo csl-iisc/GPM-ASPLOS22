@@ -315,6 +315,7 @@ run_all:
 	for i in ${TYPES}; do sudo PMEM_THREADS=32 ${BUILD}/PS$$i > ../results/PS$$i.txt; done
 
 run_fig_10: 
+	make all;
 	sudo ${BUILD}/PS_gpm_ndp > ../results/PS_gpm_ndp.txt;
 
 

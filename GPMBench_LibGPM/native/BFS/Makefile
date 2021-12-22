@@ -69,6 +69,7 @@ all:
 	$(MAKE) build; 
 
 run_fig_10: 
+	make all;
 	sudo ${BUILD}/BFS_gpm_ndp > ../results/BFS_gpm_ndp.txt;
 
 
