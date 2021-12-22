@@ -33,6 +33,10 @@ run_all:
 		sudo PMEM_THREADS=32 ${BUILD}/lenet_${CP_ITER}$$i > ../results/DNN_${CP_ITER}$$i.txt; \
 	done
 
+run_fig_10: 
+	sudo ${BUILD}/lenet_${CP_ITER}_gpm_ndp > ../results/DNN_${CP_ITER}_gpm_ndp.txt;
+
+
 start:
 	mkdir -p ${BUILD}
 

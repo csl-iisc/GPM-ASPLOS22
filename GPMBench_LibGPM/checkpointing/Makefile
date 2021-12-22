@@ -1,4 +1,4 @@
-apps ?= HS DNN CFD BLK 
+apps ?= DNN CFD BLK HS 
 CP_ITERS ?= 10
 
 run_all:
@@ -8,12 +8,31 @@ run_all:
 		cd ..; \
 	done
 	
+run_fig10:
+	for i in ${apps}; do \
+		cd $$i; \
+		make run_fig_10 CP_ITERS=${CP_ITERS}; \
+		cd ..; \
+	done
+	
+
 out_figure_9:
 	rm -f out_figure9.txt; 
 	./run.sh;
 	cat out_figure9.txt;
 	
-	
+out_figure_10:
+	echo "" > out_figure10.txt; 
+	for i in ${apps}; do                                            \
+		time_gpm_ndp=$$(grep "CheckpointTime" results/$${i}_${CP_ITERS}_gpm_ndp.txt | grep -oE "[0-9]+\.[0-9]+");     \
+		time_gpm_ndp_persist=$$(grep "PersistTime" results/$${i}_${CP_ITERS}_gpm_ndp.txt | grep -oE "[0-9]+\.[0-9]+");     \
+		time_capfs=$$(grep "CheckpointTime" results/$${i}_${CP_ITERS}_fs_gpu.txt | grep -oE "[0-9]+\.[0-9]+");     \
+		time_capmm_persist=$$(grep "PersistTime" results/$${i}_${CP_ITERS}_mm_gpu.txt | grep -oE "[0-9]+\.[0-9]+");     \
+		speedup_gpm_ndp=$$(awk "BEGIN {print $${time_capfs}/$${time_gpm_ndp}}"); \
+		echo "$$i\t$${time_gpm_ndp}\t$${time_gpm_ndp_persist}\t$${speedup_gpm_ndp}\t$${time_capmm_persist}" >> out_figure10.txt; \
+	done
+	cat out_figure10.txt;
+
 out_table_5:
 	echo "" > out_table5.txt; 
 	for i in ${apps}; do                                            \

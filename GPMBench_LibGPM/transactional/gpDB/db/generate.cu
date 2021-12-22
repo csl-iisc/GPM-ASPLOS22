@@ -204,11 +204,11 @@ int main(int argc, char **argv)
         
     //printf("InsertRecovery\t%f\tms\nUpdateRecovery\t%f\tms\n", insert_recov_time / 1000000.0f, update_recov_time / 1000000.0f);
     
-    printf("\nInsertTime\t%f\tms\n", insert_operation_time/1000000.0);  
+    printf("\nInsertTime\t%f\tms\n", (insert_operation_time + insert_ddio_time + insert_persist_time)/1000000.0);  
     printf("DDIO time: %f ms\nPersist time: %f\n\n", insert_ddio_time/1000000.0, insert_persist_time/1000000.0);
 
     printf("UPDATE\nUpdate execution time: %f ms, Search: %f ms\n", update_operation_time/1000000.0, update_time / 1000000.0);  
-    printf("UpdateTime\t%f\tms\n", update_operation_time/1000000.0 + update_time / 1000000.0);  
+    printf("UpdateTime\t%f\tms\n", (update_operation_time + update_ddio_time + update_time + update_persist_time) / 1000000.0);  
     printf("DDIO time: %f ms\nPersist time: %f\n\n", update_ddio_time/1000000.0, update_persist_time/1000000.0);
 
 	return 0;

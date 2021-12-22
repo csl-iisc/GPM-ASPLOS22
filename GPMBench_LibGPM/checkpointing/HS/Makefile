@@ -54,6 +54,8 @@ run_all:
 		sudo PMEM_THREADS=32 ${BUILD}/hotspot_${CP_ITER}$$i > ../results/HS_${CP_ITER}$$i.txt; \
 	done
 
+run_fig_10: 
+	sudo ${BUILD}/hotspot_${CP_ITER}_gpm_ndp > ../results/HS_${CP_ITER}_gpm_ndp.txt;
 
 start:
 	mkdir -p ${BUILD}

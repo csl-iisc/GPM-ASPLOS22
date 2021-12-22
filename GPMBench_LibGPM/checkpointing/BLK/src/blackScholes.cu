@@ -231,7 +231,7 @@ int main(int argc, char **argv)
     //printf("Options count             : %lli     \n", 2 * OPT_N);
     printf("BlackScholesGPU() overall time    : %f msec\n", gpuTime * NUM_ITERATIONS);
     printf("BlackScholesGPU() kernel time    : %f msec\n", gpuTime);
-    printf("CheckpointTime\t%f\tms\n", checkpoint_time / 1000000.0);
+    printf("CheckpointTime\t%f\tms\n", checkpoint_time + persist_time / 1000000.0);
     printf("PersistTime\t%f\tms\n", persist_time / 1000000.0);
     //printf("Effective memory bandwidth: %llf GB/s\n", ((double)(5 * OPT_N * sizeof(float)) * 1E-9) / (gpuTime * 1E-3));
     //printf("Gigaoptions per second    : %llf     \n\n", ((double)(2 * OPT_N) * 1E-9) / (gpuTime * 1E-3));

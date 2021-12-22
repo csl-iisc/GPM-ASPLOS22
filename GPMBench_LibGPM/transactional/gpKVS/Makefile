@@ -97,7 +97,7 @@ OBJECT = $(addprefix $(OBJECT_DIR)/, $(OBJECT_FILE))
 BUILD  := ./build
 SRC    := ./src
 
-all: start ${BUILD}/kvs_gpm ${BUILD}/kvs_gpm_rest ${BUILD}/kvs_get_set_gpm_ndp ${BUILD}/kvs_fs_gpu ${BUILD}/kvs_mm_gpu ${BUILD}/kvs_gpm_ndp ${BUILD}/kvs_get_set_gpm ${BUILD}/kvs_get_set_mm_gpu  ${BUILD}/kvs_get_set_fs_gpu #${BUILD}/kvs_volatile ${BUILD}/kvs_conv ${BUILD}/kvs_gpm_near  ${BUILD}/kvs_gpm_debug
+all: start ${BUILD}/kvs_gpm ${BUILD}/kvs_gpm_rest ${BUILD}/kvs_get_set_gpm_ndp ${BUILD}/kvs_fs_gpu ${BUILD}/kvs_mm_gpu ${BUILD}/kvs_gpm_ndp ${BUILD}/kvs_get_set_gpm ${BUILD}/kvs_get_set_mm_gpu  ${BUILD}/kvs_get_set_fs_gpu ${BUILD}/kvs_conv #${BUILD}/kvs_volatile ${BUILD}/kvs_gpm_near  ${BUILD}/kvs_gpm_debug
 
 TYPES ?= _gpm _mm_gpu _fs_gpu _gpm_ndp _gpm_rest
 
@@ -108,6 +108,10 @@ run_all:
 		sudo PMEM_THREADS=32 ${BUILD}/kvs$$i > ../results/kvs$$i.txt; \
 		sudo PMEM_THREADS=32 ${BUILD}/kvs_get_set$$i > ../results/kvs_gs$$i.txt; \
 	done
+
+run_fig_10:
+	sudo ${BUILD}/kvs_gpm_ndp > ../results/kvs_gpm_ndp.txt;
+	sudo ${BUILD}/kvs_get_set_gpm_ndp > ../results/kvs_get_set_gpm_ndp.txt;
 
 run_rest:
 	make all;

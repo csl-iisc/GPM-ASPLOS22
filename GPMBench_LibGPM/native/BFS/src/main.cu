@@ -475,7 +475,7 @@ int main(int argc, char **argv) {
 	OUTPUT_STATS
     printf("\nOperation execution time: %f ms\n", operation_time/1000000.0);
     printf("\nruntime: %f ms\n", operation_time/1000000.0);
-    printf("Persist time: %f ms\n", persist_time/1000000.0);
+    printf("PersistTime: %f ms\n", persist_time/1000000.0);
 
 
 // Verify answer

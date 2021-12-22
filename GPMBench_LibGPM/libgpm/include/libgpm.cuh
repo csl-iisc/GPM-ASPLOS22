@@ -347,7 +347,7 @@ static __host__ void pmem_mt_persist(void *addr, size_t size)
     if(ptr != NULL)
         threads = atoi(ptr);
     else
-        threads = 32;
+        threads = 1;
     //printf("Using %d threads to persist\n", threads);
     size_t GRAN = (size + threads - 1) / threads;
     #pragma omp parallel for num_threads(threads)
