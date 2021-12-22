@@ -18,7 +18,7 @@ table_5:
 figure_10:
 	for i in ${folders}; do \
 		cd $$i; \
-		$(MAKE) run_fig10; \
+		$(MAKE) figure_10; \
 		cd ..; \
 	done
 

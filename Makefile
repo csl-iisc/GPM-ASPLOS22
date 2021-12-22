@@ -5,6 +5,9 @@ figure_1:
 
 figure_9:
 	cd ${folder}; $(MAKE) figure_9;
+
+figure_10:
+	cd ${folder}; $(MAKE) figure_10;
 	
 table_5:
 	cd ${folder}; $(MAKE) table_5;
@@ -13,6 +16,7 @@ all:
 	make figure_1 
 	make figure_9 
 	make table_5 
+	make figure_10
 
 out_figure1:
 	mkdir -p reports/
@@ -27,6 +31,12 @@ out_figure9:
 	cd ${folder}; $(MAKE) out_figure_9;
 	mv GPMBench_LibGPM/out_figure9.txt reports/;
 	cat reports/out_figure9.txt
+
+out_figure10:
+	mkdir -p reports/
+	cd ${folder}; $(MAKE) out_figure_10;
+	mv GPMBench_LibGPM/out_figure10.txt reports/;
+	cat reports/out_figure10.txt
 	
 out_table_5:
 	mkdir -p reports/

@@ -1,5 +1,6 @@
 apps ?= gpKVS gpDB
 run_all:
+	mkdir -p ./results;
 	for i in ${apps}; do \
 		cd $$i; \
 		make run_all; \
@@ -7,6 +8,7 @@ run_all:
 	done
 
 run_rest:
+	mkdir -p ./results;
 	for i in ${apps}; do \
 		cd $$i; \
 		make run_rest; \
@@ -14,6 +16,7 @@ run_rest:
 	done
 
 run_fig10:
+	mkdir -p ./results;
 	for i in ${apps}; do \
 		cd $$i; \
 		make run_fig_10; \
@@ -96,6 +99,10 @@ out_figure_10:
 figure_9:
 	$(MAKE) run_all TYPES="_gpm _fs_gpu _mm_gpu";
 	$(MAKE) out_figure_9;
+
+figure_10:
+	$(MAKE) run_fig10;
+	$(MAKE) out_figure_10;
 	
 table_5:
 	$(MAKE) run_rest TYPES="_gpm _gpm_rest";

@@ -2,6 +2,7 @@ apps ?= DNN CFD BLK HS
 CP_ITERS ?= 10
 
 run_all:
+	mkdir -p ./results;
 	for i in ${apps}; do \
 		cd $$i; \
 		make run_all CP_ITERS=${CP_ITERS}; \
@@ -9,6 +10,7 @@ run_all:
 	done
 	
 run_fig10:
+	mkdir -p ./results;
 	for i in ${apps}; do \
 		cd $$i; \
 		make run_fig_10 CP_ITERS=${CP_ITERS}; \
@@ -17,6 +19,7 @@ run_fig10:
 	
 
 out_figure_9:
+	mkdir -p ./results;
 	rm -f out_figure9.txt; 
 	./run.sh;
 	cat out_figure9.txt;

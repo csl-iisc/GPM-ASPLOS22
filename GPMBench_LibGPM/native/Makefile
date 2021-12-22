@@ -1,6 +1,7 @@
 apps ?= SRAD PS BFS 
 
 run_all:
+	mkdir -p ./results;
 	for i in ${apps}; do \
 		cd $$i; \
 		make run_all; \
@@ -8,6 +9,7 @@ run_all:
 	done
 	
 run_fig10:
+	mkdir -p ./results;
 	for i in ${apps}; do \
 		cd $$i; \
 		make run_fig_10; \
