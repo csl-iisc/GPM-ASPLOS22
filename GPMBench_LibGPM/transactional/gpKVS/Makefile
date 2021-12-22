@@ -111,7 +111,7 @@ run_all:
 
 run_fig_10:
 	sudo ${BUILD}/kvs_gpm_ndp > ../results/kvs_gpm_ndp.txt;
-	sudo ${BUILD}/kvs_get_set_gpm_ndp > ../results/kvs_get_set_gpm_ndp.txt;
+	sudo ${BUILD}/kvs_get_set_gpm_ndp > ../results/kvs_gs_gpm_ndp.txt;
 
 run_rest:
 	make all;

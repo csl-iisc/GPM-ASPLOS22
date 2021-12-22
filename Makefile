@@ -7,6 +7,7 @@ figure_9:
 	cd ${folder}; $(MAKE) figure_9;
 
 figure_10:
+	cd ${folder}; $(MAKE) figure_9; # Have to get results for Fig 9 first. Used for Fig 10.
 	cd ${folder}; $(MAKE) figure_10;
 	
 table_5:
