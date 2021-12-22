@@ -19,6 +19,9 @@ run_rest:
 	for i in ${TYPES}; do \
 		sudo PMEM_THREADS=8 ${BUILD}/gpDB$$i comparedb 50000000 > ../results/gpDB$$i.txt; \
 	done
+	
+run_fig_10:
+	sudo ${BUILD}/gpDB_gpm_ndp > ../results/gpDB_gpm_ndp.txt;
 
 clean:
 	rm -rf gsl gsl-$(GSL_VER) db/comparedb virginian.tar.gz debug release

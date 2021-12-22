@@ -51,3 +51,6 @@ figure_9:
 table_5:
 	$(MAKE) run_all TYPES="_gpm _gpm_rest";
 	$(MAKE) out_table_5;	
+
+figure_10:
+	$(MAKE) run_fig10;

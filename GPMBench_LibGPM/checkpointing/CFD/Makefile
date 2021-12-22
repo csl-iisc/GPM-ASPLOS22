@@ -74,4 +74,7 @@ ${BUILD}/CFD_${CP_ITER}_volatile: ${SRC}/CFD.cu
 	$(CC) $(KERNEL_DIM) $(CC_FLAGS) $? -o $@ -I$(CUDA_SDK_PATH)/common/inc -I$(PMEM_INC) -L$(CUDA_DIR)/lib $(CUTIL_LIB) -DCP_ITER=${CP_ITER} -DNVM_ALLOC_CPU -DFAKE_NVM
 clean:
 	rm -f *.linkinfo
-	rm -f ${BUILD}/* !("CFD_10_gpufs")
+	mv ${BUILD}/CFD_10_gpufs . 
+	rm -rf ${BUILD}/ #!("lenet_10_gpufs")
+	mkdir -p ${BUILD}
+	mv CFD_10_gpufs ${BUILD}/

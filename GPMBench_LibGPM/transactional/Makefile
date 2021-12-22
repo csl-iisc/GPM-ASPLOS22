@@ -12,7 +12,14 @@ run_rest:
 		make run_rest; \
 		cd ..; \
 	done
-	
+
+run_fig10:
+	for i in ${apps}; do \
+		cd $$i; \
+		make run_fig_10; \
+		cd ..; \
+	done
+
 out_figure_9:
 	echo "" > out_figure9.txt; 
 	

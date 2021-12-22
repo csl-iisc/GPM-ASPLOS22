@@ -15,6 +15,13 @@ table_5:
 		cd ..; \
 	done
 
+figure_10:
+	for i in ${folders}; do \
+		cd $$i; \
+		$(MAKE) run_fig10; \
+		cd ..; \
+	done
+
 out_figure_9:
 	touch out_figure9.txt; \
 	for i in ${folders}; do \
@@ -30,5 +37,14 @@ out_table_5:
 		cd $$i; \
 		$(MAKE) out_table_5; \
 		cat out_table5.txt >> ../out_table5.txt; \
+		cd ..; \
+	done
+
+out_figure_10:
+	touch out_figure10.txt; \
+	for i in ${folders}; do \
+		cd $$i; \
+		$(MAKE) out_figure_10; \
+		cat out_figure10.txt >> ../out_figure10.txt; \
 		cd ..; \
 	done
