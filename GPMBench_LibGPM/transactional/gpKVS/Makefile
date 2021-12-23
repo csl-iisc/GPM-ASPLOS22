@@ -110,8 +110,14 @@ run_all:
 	done
 
 run_fig_10:
+	make all;
 	sudo ${BUILD}/kvs_gpm_ndp > ../results/kvs_gpm_ndp.txt;
 	sudo ${BUILD}/kvs_get_set_gpm_ndp > ../results/kvs_gs_gpm_ndp.txt;
+
+run_fig_11a:
+	make all;
+	sudo ${BUILD}/kvs_gpm > ../results/kvs_gpm.txt;
+	sudo ${BUILD}/kvs_conv > ../results/kvs_gpm_conv.txt;
 
 run_rest:
 	make all;

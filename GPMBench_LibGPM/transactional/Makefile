@@ -23,6 +23,14 @@ run_fig10:
 		cd ..; \
 	done
 
+run_fig11a:
+	mkdir -p ./results;
+	for i in ${apps}; do \
+		cd $$i; \
+		make run_fig_11a; \
+		cd ..; \
+	done
+
 out_figure_9:
 	echo "" > out_figure9.txt; 
 	
@@ -92,9 +100,43 @@ out_figure_10:
 		speedup_gpm_ndp=$$(awk "BEGIN {print $${time_capfs}/$${time_gpm_ndp}}"); \
 		echo "$$i\t$${time_gpm_ndp}\t$${time_gpm_ndp_persist}\t$${speedup_gpm_ndp}\t$${time_capmm_persist}" >> out_figure10.txt; \
 	done
+	
+	time_gpm_ndp=$$(grep "InsertTime" results/gpDB_gpm_ndp.txt | grep -oE "[0-9]+\.[0-9]+");     \
+	time_gpm_ndp_persist=$$(grep "InsertPersistTime" results/gpDB_gpm_ndp.txt | grep -oE "[0-9]+\.[0-9]+");     \
+	time_capfs=$$(grep "InsertTime" results/gpDB_fs_gpu.txt | grep -oE "[0-9]+\.[0-9]+");     \
+	time_capmm_persist=$$(grep "InsertPersistTime" results/gpDB_mm_gpu.txt | grep -oE "[0-9]+\.[0-9]+");     \
+	speedup_gpm_ndp=$$(awk "BEGIN {print $${time_capfs}/$${time_gpm_ndp}}"); \
+	echo "$$i\t$${time_gpm_ndp}\t$${time_gpm_ndp_persist}\t$${speedup_gpm_ndp}\t$${time_capmm_persist}" >> out_figure10.txt; \
+	
+	time_gpm=$$(grep "InsertTime" results/gpDB_gpm.txt | grep -oE "[0-9]+\.[0-9]+");     \
+	time_fs=$$(grep "InsertTime" results/gpDB_fs_gpu.txt | grep -oE "[0-9]+\.[0-9]+");   \
+	time_mm=$$(grep "InsertTime" results/gpDB_mm_gpu.txt | grep -oE "[0-9]+\.[0-9]+");   \
+	speedup_mm=$$(awk "BEGIN {print $${time_fs}/$${time_mm}}"); \
+	speedup_gpm=$$(awk "BEGIN {print $${time_fs}/$${time_gpm}}"); \
+	echo "gpDB_I\t$${time_fs}\t$${time_mm}\t$${speedup_mm}\t$${time_gpm}\t$${speedup_gpm}" >> out_figure9.txt;
+	
+	#echo "\tCAP-FS\tCAP-MM\tGPM" >> out_figure9.txt;
+	time_gpm=$$(grep "UpdateTime" results/gpDB_gpm.txt | grep -oE "[0-9]+\.[0-9]+");     \
+	time_fs=$$(grep "UpdateTime" results/gpDB_fs_gpu.txt | grep -oE "[0-9]+\.[0-9]+");   \
+	time_mm=$$(grep "UpdateTime" results/gpDB_mm_gpu.txt | grep -oE "[0-9]+\.[0-9]+");   \
+	speedup_mm=$$(awk "BEGIN {print $${time_fs}/$${time_mm}}"); \
+	speedup_gpm=$$(awk "BEGIN {print $${time_fs}/$${time_gpm}}"); \
+	echo "gpDB_U\t$${time_fs}\t$${time_mm}\t$${speedup_mm}\t$${time_gpm}\t$${speedup_gpm}" >> out_figure9.txt;
+	
 	cat out_figure10.txt
 
-
+out_figure_11a:
+	echo "Conv. time\tHCL time\tSpeedup" > out_figure11a.txt;
+	time_gpm=$$(grep "Runtime" results/kvs_gpm.txt | grep -oE "[0-9]+\.[0-9]+");     \
+	time_gpm_conv=$$(grep "Runtime" results/kvs_gpm_conv.txt | grep -oE "[0-9]+\.[0-9]+");     \
+	speedup=$$(awk "BEGIN {print $${time_gpm_conv}/$${time_gpm}}"); \
+	echo "gpKVS\t$${time_gpm_conv}\t$${time_gpm}\t$${speedup}" >> out_figure11a.txt;
+	
+	time_gpm=$$(grep "UpdateTime" results/gpDB_gpm.txt | grep -oE "[0-9]+\.[0-9]+");     \
+	time_gpm_conv=$$(grep "UpdateTime" results/gpDB_gpm_conv.txt | grep -oE "[0-9]+\.[0-9]+");     \
+	speedup=$$(awk "BEGIN {print $${time_gpm_conv}/$${time_gpm}}"); \
+	echo "gpDB_U\t$${time_gpm_conv}\t$${time_gpm}\t$${speedup}" >> out_figure11a.txt;
+	cat out_figure11a.txt
 
 figure_9:
 	$(MAKE) run_all TYPES="_gpm _fs_gpu _mm_gpu";
@@ -103,6 +145,10 @@ figure_9:
 figure_10:
 	$(MAKE) run_fig10;
 	$(MAKE) out_figure_10;
+
+figure_11a:
+	$(MAKE) run_fig11a;
+	$(MAKE) out_figure_11a;
 	
 table_5:
 	$(MAKE) run_rest TYPES="_gpm _gpm_rest";

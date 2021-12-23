@@ -21,7 +21,11 @@ run_rest:
 	done
 	
 run_fig_10:
-	sudo ${BUILD}/gpDB_gpm_ndp > ../results/gpDB_gpm_ndp.txt;
+	sudo ${BUILD}/gpDB_gpm_ndp comparedb 50000000 > ../results/gpDB_gpm_ndp.txt;
+	
+run_fig_11a:
+	sudo ${BUILD}/gpDB_gpm comparedb 50000000 > ../results/gpDB_gpm.txt;
+	sudo ${BUILD}/gpDB_gpm_conv comparedb 50000000 > ../results/gpDB_gpm_conv.txt;
 
 clean:
 	rm -rf gsl gsl-$(GSL_VER) db/comparedb virginian.tar.gz debug release

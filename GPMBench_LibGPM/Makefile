@@ -22,6 +22,10 @@ figure_10:
 		cd ..; \
 	done
 
+figure_11a:
+	cd transactional; \
+	$(MAKE) figure_11a;
+
 out_figure_9:
 	touch out_figure9.txt; \
 	for i in ${folders}; do \
@@ -48,3 +52,9 @@ out_figure_10:
 		cat out_figure10.txt >> ../out_figure10.txt; \
 		cd ..; \
 	done
+
+out_figure_11a:
+	touch out_figure11a.txt; \
+	cd transactional; \
+	$(MAKE) out_figure_11a; \
+	cat out_figure11a.txt >> ../out_figure11a.txt;
