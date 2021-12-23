@@ -25,14 +25,19 @@ out_figure_9:
 	cat out_figure9.txt;
 	
 out_figure_10:
-	echo "" > out_figure10.txt; 
+	echo "" > out_figure10.txt;
 	for i in ${apps}; do                                            \
-		time_gpm_ndp=$$(grep "CheckpointTime" results/$${i}_${CP_ITERS}_gpm_ndp.txt | grep -oE "[0-9]+\.[0-9]+");     \
-		time_gpm_ndp_persist=$$(grep "PersistTime" results/$${i}_${CP_ITERS}_gpm_ndp.txt | grep -oE "[0-9]+\.[0-9]+");     \
-		time_capfs=$$(grep "CheckpointTime" results/$${i}_${CP_ITERS}_fs_gpu.txt | grep -oE "[0-9]+\.[0-9]+");     \
-		time_capmm_persist=$$(grep "PersistTime" results/$${i}_${CP_ITERS}_mm_gpu.txt | grep -oE "[0-9]+\.[0-9]+");     \
+		time_gpm=$$(grep "CheckpointTime" results/$${i}_gpm.txt | grep -oE "[0-9]+\.[0-9]+");     \
+		time_gpm_ndp=$$(grep "CheckpointTime" results/$${i}_gpm_ndp.txt | grep -oE "[0-9]+\.[0-9]+");     \
+		time_gpm_ndp_persist=$$(grep "PersistTime" results/$${i}_gpm_ndp.txt | grep -oE "[0-9]+\.[0-9]+");     \
+		time_capfs=$$(grep "CheckpointTime" results/$${i}_fs_gpu.txt | grep -oE "[0-9]+\.[0-9]+");     \
+		time_capmm=$$(grep "CheckpointTime" results/$${i}_mm_gpu.txt | grep -oE "[0-9]+\.[0-9]+");     \
+		time_capmm_persist=$$(grep "PersistTime" results/$${i}_mm_gpu.txt | grep -oE "[0-9]+\.[0-9]+");     \
 		speedup_gpm_ndp=$$(awk "BEGIN {print $${time_capfs}/$${time_gpm_ndp}}"); \
-		echo "$$i\t$${time_gpm_ndp}\t$${time_gpm_ndp_persist}\t$${speedup_gpm_ndp}\t$${time_capmm_persist}" >> out_figure10.txt; \
+		speedup_gpm=$$(awk "BEGIN {print $${time_capfs}/$${time_gpm}}"); \
+		speedup_gpm_eadr=$$(awk "BEGIN {print $${time_capfs}/($${time_gpm_ndp}-$${time_gpm_ndp_persist})}"); \
+		speedup_cap_eadr=$$(awk "BEGIN {print $${time_capfs}/($${time_capmm}-$${time_capmm_persist})}"); \
+		echo "$$i\t$${speedup_gpm_ndp}\t$${speedup_gpm}\t$${speedup_gpm_eadr}" >> out_figure10.txt; \
 	done
 	cat out_figure10.txt;
 
