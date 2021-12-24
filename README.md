@@ -18,6 +18,8 @@ The following steps are required to reproduce the results, along with the expect
  3. **Replicating Figure 1 [~40 + 30 minutes]**
  4. **Replicating Figure 9 [~120 minutes]**
  5. **Replicating Table 5 [~7 minutes]**
+ 6. **Replicating Figure 10 [~120 minutes]**
+ 7. **Replicating Figure 11a [~5 minutes]**
 
 
 ## Setting up PMEM [~10 minutes]
@@ -106,6 +108,37 @@ make out_table5
 Final normalized results will be outputted in the terminal and are also contained at reports/ in tab-separated format.
 
 
+**Figure 10 [~120 minutes]**     
+Run the following command in the main repository folder:
+```
+make figure_10
+```
+This will run the benchmarks for GPM and CAP and measure the run time. 
+
+Raw outputs will be kept in individual results folders that can be obtained in GPMbench_LibGPM/transactional, GPMBench_LibGPM/checkpointing and GPMBench_LibGPM/native.
+
+To obtain the report, run the following command in the main repository folder: 
+```
+make out_figure10
+```
+
+Final normalized results will be outputted in the terminal and are also contained at reports/ in tab-separated format. This can be imported into a spreadsheet of your choice to generate the appropriate figure.
+
+**Figure 11a [~5 minutes]**     
+Run the following command in the main repository folder:
+```
+make figure_11a
+```
+This will run the benchmarks for GPM with and without HCL and measure the run time. 
+
+Raw outputs will be kept in individual results folders that can be obtained in GPMbench_LibGPM/transactional, GPMBench_LibGPM/checkpointing and GPMBench_LibGPM/native.
+
+To obtain the report, run the following command in the main repository folder: 
+```
+make out_figure11a
+```
+
+Final normalized results will be outputted in the terminal and are also contained at reports/ in tab-separated format. This can be imported into a spreadsheet of your choice to generate the appropriate figure.
 
 ## Source code
 The relevant source code for libGPM can be found in "[GPMBench_LibGPM/libgpm/include](/GPMBench_LibGPM/libgpm/include)".
