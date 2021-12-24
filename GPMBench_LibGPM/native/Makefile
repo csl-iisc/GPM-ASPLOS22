@@ -1,4 +1,4 @@
-apps ?= SRAD PS BFS 
+apps ?= BFS SRAD PS 
 
 run_all:
 	mkdir -p ./results;
@@ -18,6 +18,7 @@ run_fig10:
 
 figure_10:
 	$(MAKE) run_fig10;
+	$(MAKE) out_figure_10;
 
 out_figure_10:
 	echo "" > out_figure10.txt;
@@ -32,7 +33,7 @@ out_figure_10:
 		speedup_gpm=$$(awk "BEGIN {print $${time_capfs}/$${time_gpm}}"); \
 		speedup_gpm_eadr=$$(awk "BEGIN {print $${time_capfs}/($${time_gpm_ndp}-$${time_gpm_ndp_persist})}"); \
 		speedup_cap_eadr=$$(awk "BEGIN {print $${time_capfs}/($${time_capmm}-$${time_capmm_persist})}"); \
-		echo "$$i\t$${speedup_gpm_ndp}\t$${speedup_gpm}\t$${speedup_gpm_eadr}" >> out_figure10.txt; \
+		echo "$$i\t$${speedup_gpm_ndp}\t$${speedup_gpm}\t$${speedup_gpm_eadr}\t$${speedup_cap_eadr}" >> out_figure10.txt; \
 	done
 	cat out_figure10.txt
 

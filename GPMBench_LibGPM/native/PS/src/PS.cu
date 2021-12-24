@@ -362,15 +362,16 @@ bool shuffle_simple_test(int argc, char **argv)
         ddio_on(); 
     #endif
     operation_time += (double)time_val(TIME_NOW - start1).count() / 1000.0f; 
-    printf("Operation time: %f ms\n", operation_time);
-    printf("runtime: %f ms\n", operation_time + persist_time);
-    printf("memcpy_time: %f ms\n", memcpy_time);
     #ifdef GPM_WDP
     start1 = TIME_NOW;
     pmem_mt_persist(pm_data, sz * n_arrays);
     persist_time += (double)time_val(TIME_NOW- start1).count() / 1000.0f; 
     printf("PersistTime: %f ms\n", persist_time);
     #endif   
+    printf("Operation time: %f ms\n", operation_time);
+    printf("runtime: %f ms\n", operation_time + persist_time);
+    printf("memcpy_time: %f ms\n", memcpy_time);
+   
     
     checkCudaErrors(cudaFree(d_data));
     checkCudaErrors(cudaFree(d_partial_sums));

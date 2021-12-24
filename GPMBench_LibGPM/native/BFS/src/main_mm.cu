@@ -442,7 +442,7 @@ int main(int argc, char **argv) {
       //CUDA_ERR();
     }
 printf("\nOperation execution time: %f ms\n", operation_time/1000000.0);
-printf("memcpy time: %f \t persist time: %f \t\n", memcpy_time/1000000.0f, persist_time/1000000.0f); 
+printf("MemcpyTime:\t%f\nPersistTime:\t%f\n", memcpy_time/1000000.0f, persist_time/1000000.0f); 
 printf("\nruntime: %f ms\n", (operation_time + memcpy_time + persist_time)/1000000.0);
 printf("Tot writes: %lli\n", nvm_writes); 
 

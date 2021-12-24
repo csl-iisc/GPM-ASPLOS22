@@ -104,7 +104,7 @@ out_figure_10:
 		speedup_gpm=$$(awk "BEGIN {print $${time_capfs}/$${time_gpm}}"); \
 		speedup_gpm_eadr=$$(awk "BEGIN {print $${time_capfs}/($${time_gpm_ndp}-$${time_gpm_ndp_persist})}"); \
 		speedup_cap_eadr=$$(awk "BEGIN {print $${time_capfs}/($${time_capmm}-$${time_capmm_persist})}"); \
-		echo "$$i\t$${speedup_gpm_ndp}\t$${speedup_gpm}\t$${speedup_gpm_eadr}" >> out_figure10.txt; \
+		echo "$$i\t$${speedup_gpm_ndp}\t$${speedup_gpm}\t$${speedup_gpm_eadr}\t$${speedup_cap_eadr}" >> out_figure10.txt; \
 	done	
 	
 	time_gpm=$$(grep "InsertTime" results/gpDB_gpm.txt | grep -oE "[0-9]+\.[0-9]+");     \
@@ -117,19 +117,19 @@ out_figure_10:
 	speedup_gpm=$$(awk "BEGIN {print $${time_capfs}/$${time_gpm}}"); \
 	speedup_gpm_eadr=$$(awk "BEGIN {print $${time_capfs}/($${time_gpm_ndp}-$${time_gpm_ndp_persist})}"); \
 	speedup_cap_eadr=$$(awk "BEGIN {print $${time_capfs}/($${time_capmm}-$${time_capmm_persist})}"); \
-	echo "gpDB_I\t$${speedup_gpm_ndp}\t$${speedup_gpm}\t$${speedup_gpm_eadr}" >> out_figure10.txt;
+	echo "gpDB_I\t$${speedup_gpm_ndp}\t$${speedup_gpm}\t$${speedup_gpm_eadr}\t$${speedup_cap_eadr}" >> out_figure10.txt;
 	
-	time_gpm=$$(grep "UpdateTime" results/$${i}_gpm.txt | grep -oE "[0-9]+\.[0-9]+");     \
-	time_gpm_ndp=$$(grep "UpdateTime" results/$${i}_gpm_ndp.txt | grep -oE "[0-9]+\.[0-9]+");     \
-	time_gpm_ndp_persist=$$(grep -m2 "Persist" results/$${i}_gpm_ndp.txt | tail -n1 | grep -oE "[0-9]+\.[0-9]+");     \
-	time_capfs=$$(grep "UpdateTime" results/$${i}_fs_gpu.txt | grep -oE "[0-9]+\.[0-9]+");     \
-	time_capmm=$$(grep "UpdateTime" results/$${i}_mm_gpu.txt | grep -oE "[0-9]+\.[0-9]+");     \
-	time_capmm_persist=$$(grep -m2 "Persist" results/$${i}_mm_gpu.txt | tail -n1 | grep -oE "[0-9]+\.[0-9]+");     \
+	time_gpm=$$(grep "UpdateTime" results/gpDB_gpm.txt | grep -oE "[0-9]+\.[0-9]+");     \
+	time_gpm_ndp=$$(grep "UpdateTime" results/gpDB_gpm_ndp.txt | grep -oE "[0-9]+\.[0-9]+");     \
+	time_gpm_ndp_persist=$$(grep -m2 "Persist" results/gpDB_gpm_ndp.txt | tail -n1 | grep -oE "[0-9]+\.[0-9]+");     \
+	time_capfs=$$(grep "UpdateTime" results/gpDB_fs_gpu.txt | grep -oE "[0-9]+\.[0-9]+");     \
+	time_capmm=$$(grep "UpdateTime" results/gpDB_mm_gpu.txt | grep -oE "[0-9]+\.[0-9]+");     \
+	time_capmm_persist=$$(grep -m2 "Persist" results/gpDB_mm_gpu.txt | tail -n1 | grep -oE "[0-9]+\.[0-9]+");     \
 	speedup_gpm_ndp=$$(awk "BEGIN {print $${time_capfs}/$${time_gpm_ndp}}"); \
 	speedup_gpm=$$(awk "BEGIN {print $${time_capfs}/$${time_gpm}}"); \
 	speedup_gpm_eadr=$$(awk "BEGIN {print $${time_capfs}/($${time_gpm_ndp}-$${time_gpm_ndp_persist})}"); \
 	speedup_cap_eadr=$$(awk "BEGIN {print $${time_capfs}/($${time_capmm}-$${time_capmm_persist})}"); \
-	echo "gpDB_U\t$${speedup_gpm_ndp}\t$${speedup_gpm}\t$${speedup_gpm_eadr}" >> out_figure10.txt;
+	echo "gpDB_U\t$${speedup_gpm_ndp}\t$${speedup_gpm}\t$${speedup_gpm_eadr}\t$${speedup_cap_eadr}" >> out_figure10.txt;
 	cat out_figure10.txt
 
 out_figure_11a:

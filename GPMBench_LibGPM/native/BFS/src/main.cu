@@ -327,6 +327,12 @@ int main(int argc, char **argv) {
     cudaDeviceSynchronize();
     operation_time += std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now() - start).count();
     CUDA_ERR();
+    //Turn DDIO off here 
+#if defined(NVM_ALLOC_CPU) && !defined(FAKE_NVM) && !defined(GPM_WDP)
+	start = std::chrono::high_resolution_clock::now(); 
+	ddio_off(); 
+	operation_time += std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now() - start).count();
+#endif
     //timer.stop("Copy To Device");
    for(int rep = 0; rep < p.n_reps + p.n_warmup; rep++) {
 		
@@ -395,13 +401,7 @@ int main(int argc, char **argv) {
         	h_head = 0;
             cleanup = 1;
         }
-		//Turn DDIO off here 
 		//START_BW_MONITOR2("bw_gpm_bfs.csv")
-#if defined(NVM_ALLOC_CPU) && !defined(FAKE_NVM) && !defined(GPM_WDP)
-		start = std::chrono::high_resolution_clock::now(); 
-		ddio_off(); 
-		operation_time += std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now() - start).count();
-#endif
       //Run BFS
 		while(h_num_t != 0) {
 		    if(h_iter % 2 == 0) {
@@ -433,13 +433,16 @@ int main(int argc, char **argv) {
 #if defined(GPM_WDP)
 		    start = std::chrono::high_resolution_clock::now();
 		    cudaMemcpy(&h_tail, d_tail, sizeof(int), cudaMemcpyDeviceToHost);
-		    pmem_flush(d_qout, h_tail * sizeof(int));
+		    cudaDeviceSynchronize();
 			for(int i = 0; i < h_tail; ++i) {
 				pmem_flush(&d_cost[d_qout[i]], sizeof(int));
 				pmem_flush(&d_color[d_qout[i]], sizeof(int));
 			}
 		    pmem_drain();
-		    persist_time += std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now() - start).count();		
+		    pmem_persist(d_qout, h_tail * sizeof(int));
+		    pmem_persist(d_qin, h_num_t * sizeof(int));
+		    cudaDeviceSynchronize();
+		    persist_time += std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now() - start).count();
 #endif
 		   //CUDA_ERR();
 		    cudaMemcpy(&h_tail, d_tail, sizeof(int), cudaMemcpyDeviceToHost);
@@ -451,8 +454,12 @@ int main(int argc, char **argv) {
 		    start = std::chrono::high_resolution_clock::now(); 
 		    h_num_t = h_tail; // Number of elements in output queue
 		    cudaMemcpy(&d_num_t[h_iter % 2], &h_num_t, sizeof(int), cudaMemcpyHostToDevice);
-		    pmem_persist(&d_num_t[h_iter % 2], sizeof(int));
 		   	operation_time += std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now() - start).count();
+#if defined(GPM_WDP)
+		    start = std::chrono::high_resolution_clock::now();
+		    pmem_persist(&d_num_t[h_iter % 2], sizeof(int));
+		    persist_time += std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now() - start).count();	
+#endif
 		    h_tail = 0;
 		    h_head = 0;
 		}
@@ -465,16 +472,16 @@ int main(int argc, char **argv) {
 		//int x = h_iter;
 		//printf("%d\n", x);
 		//BFS done running
-#if defined(NVM_ALLOC_CPU) && !defined(FAKE_NVM) && !defined(GPM_WDP)
-		start = std::chrono::high_resolution_clock::now(); 
-		ddio_on(); 
-		operation_time += std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now() - start).count();
-#endif
       //CUDA_ERR();
     }
+#if defined(NVM_ALLOC_CPU) && !defined(FAKE_NVM) && !defined(GPM_WDP)
+	start = std::chrono::high_resolution_clock::now(); 
+	ddio_on(); 
+	operation_time += std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now() - start).count();
+#endif
 	OUTPUT_STATS
     printf("\nOperation execution time: %f ms\n", operation_time/1000000.0);
-    printf("\nruntime: %f ms\n", operation_time/1000000.0);
+    printf("\nruntime: %f ms\n", (operation_time + persist_time)/1000000.0);
     printf("PersistTime: %f ms\n", persist_time/1000000.0);
 
 
