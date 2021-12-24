@@ -63,6 +63,7 @@ SRC_MM := ./src/main_mm.cu ./src/kernel_mm.cu
 SRC_FS := ./src/main_fs.cu ./src/kernel_fs.cu 
 EXE    := run
 BUILD  := ./build
+INPUT  := ./input
 
 all: 
 	$(MAKE) start
@@ -75,10 +76,23 @@ run_fig_10:
 
 start:
 	mkdir -p ${BUILD}
-	mkdir -p input/ 
-	./process_input.sh
+	mkdir -p ${INPUT}
+	#./process_input.sh
 
-build: ${BUILD}/BFS_mm_gpu ${BUILD}/BFS_fs_gpu ${BUILD}/BFS_gpm ${BUILD}/BFS_gpm_ndp #${BUILD}/BFS_volatile ${BUILD}/BFS_gpm_near ${BUILD}/BFS_gpm_debug ${BUILD}/BFS_pure_cpu
+build: ${INPUT}/USA-road-d.USA.gr.parboil ${BUILD}/BFS_mm_gpu ${BUILD}/BFS_fs_gpu ${BUILD}/BFS_gpm ${BUILD}/BFS_gpm_ndp #${BUILD}/BFS_volatile ${BUILD}/BFS_gpm_near ${BUILD}/BFS_gpm_debug ${BUILD}/BFS_pure_cpu
+
+${INPUT}/USA-road-d.USA.gr.parboil: ${INPUT}/USA-road-d.USA.gr
+	cd convertor/; \
+	make; \
+	./convertor ../${INPUT}/USA-road-d.USA.gr ../${INPUT}/USA-road-d.USA.gr.parboil 0 1
+
+${INPUT}/USA-road-d.USA.gr: ${INPUT}/USA-road-d.USA.gr.gz
+	cd ${INPUT}/; \
+	gunzip -k USA-road-d.USA.gr.gz
+	
+${INPUT}/USA-road-d.USA.gr.gz:
+	cd ${INPUT}/; \
+	wget http://www.diag.uniroma1.it//challenge9/data/USA-road-d/USA-road-d.USA.gr.gz
 
 ${BUILD}/BFS_mm_gpu: ./src/main_mm.cu ./src/kernel_mm.cu
 	$(CXX) $(CXX_FLAGS) $(SRC_MM) $(INC) -o $@
