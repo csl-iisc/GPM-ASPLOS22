@@ -7,9 +7,8 @@ More details about the work can be found in our paper ASPLOS'22 paper: Leveragin
 The artifact also allows a user to reproduce some of the key results published in the paper.
 These key results include: 
 1. Figure 1: Benefits of GPM over CPU with PM. 
-2. Figure 9: Benefits ofGPMover CPU with PM.
+2. Figure 9: Benefits of GPM over other methods of persistence.
 3. Table 5: Restoration latency (RL) in GPM. 
-
 
 ## Steps to setup and replicate results
 The following steps are required to reproduce the results, along with the expected run time. All commands should be run in the main repository folder.
