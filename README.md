@@ -1,4 +1,6 @@
 # GPM: <ins>G</ins>PU with <ins>P</ins>ersistent <ins>M</ins>emory 
+[![DOI](https://zenodo.org/badge/433300625.svg)](https://zenodo.org/badge/latestdoi/433300625)
+
 GPM is a system which allows a GPU to leverage Persistent Memory and enables writing highly performant recoverable GPU applications.
 The repository contains the source of our benchmark suite: GPMBench and a CUDA library: LibGPM. 
 GPMBench comprises of 9 benchmarks categorized as transactional, native and checkpointing. 
