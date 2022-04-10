@@ -26,22 +26,6 @@ sudo su
 exit
 ```
 
-## Setting up cuDNN [~15 minutes]
-Download CuDNN 8.2 for CUDA 11.X from Nvidia's website.
-One can find the CuDNN 8.2 libraries at: https://developer.nvidia.com/rdp/cudnn-archive
-Follow the instructions from: https://docs.nvidia.com/deeplearning/cudnn/archives/cudnn_800_ea/cudnn-install/index.html#download to complete installation. 
-
-More specifically - 
-
-1. Choose a path for installing CuDNN: \<cudnnpath\>
-2. Install the downloaded runtime library as:
-sudo dpkg -i libcudnn8_x.x.x.x-1+cudax.x_amd64.deb
-3. Install the developer library, for example:
-sudo dpkg -i libcudnn8-dev_8.x.x.x.x-1+cudax.x_amd64.deb
-4. Install the code samples and the cuDNN library documentation, for example:
-sudo dpkg -i libcudnn8-doc_8.x.x.x.x-1+cudax.x_amd64.deb
-
-
 ## Replicating primary results (Figures and Tables)
 We provide the scripts required to compile and generate the results contained in the paper.
 Further details on how to replicate results can be found in the [README](/GPMBench/README.md) in the GPMBench folder.
