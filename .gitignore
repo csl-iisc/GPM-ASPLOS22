@@ -2,7 +2,9 @@
 *logs*
 *NVM_LOG
 */matrixkv/logs/*
-*build*
+!**/build/
+**/build/*
+!**/build/**/*gpufs
 Figure_9_Table_5/checkpointing/HS/data/*
 **.csv
 **.txt
