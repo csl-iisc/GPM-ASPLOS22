@@ -90,25 +90,22 @@ static __device__ int gpmlog_insert_manual(gpmlog *plog, void *var, size_t size,
         __threadfence();
         if(!locked) {
             done = true;
-            PMEM_READ_OP( size_t start = plog->plog->head[partition] , 8 )
-            PMEM_READ_OP(  , 8 )
+            size_t start = plog->plog->head[partition];
             if(start + size > plog->plog->tail[partition]) {
                 size = plog->plog->tail[partition] - start;
             }
             
-            
-            PMEM_READ_OP( , 4 )
             // Insert into log
             // Only update head after all memory has 
             // been placed to maintain crash consistency
             if(plog->plog->flags & PMEMLOG_UNSTRICT) {
-                PMEM_READ_OP( gpm_memcpy_nodrain((char *)plog->start + start, var, size, cudaMemcpyDeviceToDevice) , size )
-                PMEM_READ_OP( size_t temp = plog->plog->head[partition] + size , 8 )
+                gpm_memcpy_nodrain((char *)plog->start + start, var, size, cudaMemcpyDeviceToDevice);
+                size_t temp = plog->plog->head[partition] + size;
                 gpm_memcpy_nodrain((char *)&plog->plog->head[partition], &temp, sizeof(size_t), cudaMemcpyDeviceToDevice);
             }
             else {
-                PMEM_READ_OP( gpm_memcpy((char *)plog->start + start, var, size, cudaMemcpyDeviceToDevice) , size )
-                PMEM_READ_OP( size_t temp = plog->plog->head[partition] + size , 8 )
+                gpm_memcpy((char *)plog->start + start, var, size, cudaMemcpyDeviceToDevice);
+                size_t temp = plog->plog->head[partition] + size;
                 gpm_memcpy((char *)&plog->plog->head[partition], &temp, sizeof(size_t), cudaMemcpyDeviceToDevice);
             }
             __threadfence();
@@ -126,9 +123,8 @@ static __device__ int gpmlog_insert_managed(gpmlog *plog, void *var, size_t size
         tid = getGlobalIdx();
     else
         tid = partition;
-    PMEM_READ_OP( size_t temp_head = plog->plog->head[tid] , sizeof(size_t) )
-    //printf("Temp head: %lu\n", temp_head);
-    PMEM_READ_OP( size_t tail = plog->plog->tail[tid] , sizeof(size_t) )
+    size_t temp_head = plog->plog->head[tid];
+    size_t tail = plog->plog->tail[tid];
     int i = 0;
     for(; i < size && temp_head < tail;) {
         // Write up to a word at a time
@@ -136,7 +132,7 @@ static __device__ int gpmlog_insert_managed(gpmlog *plog, void *var, size_t size
         if(size - i >= WORD_SIZE - (int)(temp_head % WORD_SIZE))
             sz = WORD_SIZE - (int)(temp_head % WORD_SIZE);
         
-        PMEM_READ_OP( gpm_memcpy_nodrain((char *)plog->start + temp_head, (char *)var + i, sz, cudaMemcpyDeviceToDevice) , sz )
+        gpm_memcpy_nodrain((char *)plog->start + temp_head, (char *)var + i, sz, cudaMemcpyDeviceToDevice);
         
         temp_head += (size_t)sz;
         i += sz;
@@ -147,19 +143,18 @@ static __device__ int gpmlog_insert_managed(gpmlog *plog, void *var, size_t size
             temp_head += BLOCK_SIZE - WORD_SIZE;
         }
     }
-    PMEM_READ_OP( , 8 )
+
     if(i < size && temp_head >= plog->plog->tail[tid]) {
         size = i;
     }
     
-    PMEM_READ_OP( , 4 )
     // Only update head after all memory has 
     // been placed to maintain crash consistency
     if(PMEMLOG_UNSTRICT & plog->plog->flags) {
         gpm_memcpy_nodrain(&plog->plog->head[tid], &temp_head, sizeof(size_t), cudaMemcpyDeviceToDevice);
     }
     else {
-        gpm_drain();
+        gpm_persist();
         gpm_memcpy(&plog->plog->head[tid], &temp_head, sizeof(size_t), cudaMemcpyDeviceToDevice);
     }
     return i;
@@ -313,12 +308,11 @@ static __device__ void gpmlog_clear_manual(gpmlog *plog, int partition)
             if(partition == 0)
                 gpm_memset_nodrain(&plog->plog->head[partition], 0, sizeof(size_t));
             else {
-                PMEM_READ_OP( , sizeof(size_t) )
                 gpm_memcpy_nodrain(&plog->plog->head[partition], &plog->plog->tail[partition - 1], sizeof(size_t), cudaMemcpyDeviceToDevice);
             }
             // Drain if necessary
             if(!(PMEMLOG_UNSTRICT & plog->plog->flags))
-                gpm_drain();
+                gpm_persist();
 
             atomicExch(&plog->locks[partition], 0);
         }
@@ -330,14 +324,13 @@ static __device__ void gpmlog_clear_managed(gpmlog *plog, int partition)
     int tid = getGlobalIdx();
     if(partition != -1)
         tid = partition;
-    PMEM_READ_OP( , sizeof(size_t) )
     size_t head = (tid % WARP_SIZE) * WORD_SIZE + (tid < WARP_SIZE ? 0 : plog->plog->tail[tid - WARP_SIZE]);
     
     gpm_memcpy_nodrain(&plog->plog->head[tid], &head, sizeof(size_t), cudaMemcpyDeviceToDevice);
     
     // Drain if necessary
     if(!(PMEMLOG_UNSTRICT & plog->plog->flags))
-        gpm_drain();
+        gpm_persist();
 }
 
 static __global__ void setupPartitions(size_t *head, size_t *tail, int partitions, size_t len)
@@ -352,14 +345,13 @@ static __global__ void setupPartitions(size_t *head, size_t *tail, int partition
         tail[id] = len;
 }
 
-static __host__ gpmlog *gpmlog_create(const char *path, size_t len, int partitions, int flags = 0)
+static __host__ gpmlog *gpmlog_create_conv(const char *path, size_t len, int partitions, int flags = 0)
 {
     // Mark as unmanaged
     flags |= PMEMLOG_UNMANAGED;
     
     // Create volatile metadata
     gpmlog *plog, dummy_log;
-    // TODO: make this cudaMalloc
     cudaMalloc((void **)&plog, sizeof(gpmlog));
     dummy_log.path = path;
     
@@ -417,10 +409,9 @@ static __global__ void setupPartitionsManaged(size_t *head, size_t *tail, int bl
 }
 
 
-static __host__ gpmlog *gpmlog_create_managed(const char *path, size_t &len, int blocks, int threads, int flags = 0)
+static __host__ gpmlog *gpmlog_create_hcl(const char *path, size_t &len, int blocks, int threads, int flags = 0)
 {
     gpmlog *plog, dummy_log;
-    // TODO: make this cudaMalloc
     cudaMalloc((void **)&plog, sizeof(gpmlog));
     dummy_log.path = path;
     
@@ -498,7 +489,7 @@ static __host__ void gpmlog_close(gpmlog *plog)
 {
     gpmlog dummy;
     cudaMemcpy(&dummy, plog, sizeof(gpmlog), cudaMemcpyDeviceToHost);
-    gpm_unmap(dummy.path, dummy.plog, dummy.log_size);
+    gpm_unmap(dummy.plog, dummy.log_size);
     cudaFree(plog);
 }
 

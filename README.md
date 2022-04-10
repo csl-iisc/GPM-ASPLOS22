@@ -5,23 +5,10 @@ GPM is a system which allows a GPU to leverage Persistent Memory and enables wri
 The repository contains the source of our benchmark suite: GPMBench and a CUDA library: LibGPM. 
 GPMBench comprises of 9 benchmarks categorized as transactional, native and checkpointing. 
 LibGPM contains the source of our CUDA library which provides a user-friendly interface for GPU-accelerated recoverable applications. 
-More details about the work can be found in our paper ASPLOS'22 paper: Leveraging Persistent Memory from a GPU. 
-The artifact also allows a user to reproduce some of the key results published in the paper.
-These key results include: 
-1. Figure 1: Benefits of GPM over CPU with PM. 
-2. Figure 9: Benefits of GPM over other methods of persistence.
-3. Table 5: Restoration latency (RL) in GPM. 
 
-## Steps to setup and replicate results
-The following steps are required to reproduce the results, along with the expected run time. All commands should be run in the main repository folder.
- 1. **Setting up PMEM [~10 minutes]**
- 2. **Setting up cuDNN [~15 minutes]**
- 3. **Replicating Figure 1 [~40 + 30 minutes]**
- 4. **Replicating Figure 9 [~120 minutes]**
- 5. **Replicating Table 5 [~7 minutes]**
- 6. **Replicating Figure 10 [~120 minutes]**
- 7. **Replicating Figure 11a [~5 minutes]**
 
+For full details refer to our paper:
+- Shweta Pandey, Aditya K Kamath, and Arkaprava Basu. 2022. **GPM: Leveraging Persistent Memory from a GPU.** In _Proceedings of the 27th ACM International Conference on Architectural Support for Programming Languages and Operating Systems (ASPLOS '22)._ DOI:https://doi.org/10.1145/3503222.3507758 [[Paper]](https://www.csa.iisc.ac.in/~arkapravab/papers/ASPLOS22_GPM.pdf) [[Video]](https://www.youtube.com/watch?v=WER5mZPYFSc)
 
 ## Setting up PMEM [~10 minutes]
 This section explains how to setup your NVDIMM config to be run in app direct mode. This also makes sure that all the PMEM strips are interleaved to attain maximum bandwidth. 
@@ -57,101 +44,8 @@ sudo dpkg -i libcudnn8-doc_8.x.x.x.x-1+cudax.x_amd64.deb
 
 ## Replicating primary results (Figures and Tables)
 We provide the scripts required to compile and generate the results contained in the paper.
-
-**Figure 1 [~40 + 30 minutes]**    
-Run the following command in the main repository folder:
-```
-make figure_1
-```
-This will run the appropriate benchmarks and measure the run time.    
-
-Raw outputs and run times will be contained in the results folder in Figure1/Figure1a and Figure1/Figure1b.
-
-To obtain the report, run the following command in the main repository folder: 
-```
-make out_figure1
-```
-
-Final normalized results will be outputted in the terminal and are also contained in the reports/ folder as a tab-separated format. This can be imported into a spreadsheet of your choice to generate the appropriate figure.
-
-
-**Figure 9 [~120 minutes]**     
-Run the following command in the main repository folder:
-```
-make figure_9
-```
-This will run the benchmarks for GPM and CAP and measure the run time. 
-
-Raw outputs will be kept in individual results folders that can be obtained in GPMbench_LibGPM/transactional, GPMBench_LibGPM/checkpointing and GPMBench_LibGPM/native.
-
-To obtain the report, run the following command in the main repository folder: 
-```
-make out_figure9
-```
-
-Final normalized results will be outputted in the terminal and are also contained at reports/ in tab-separated format. This can be imported into a spreadsheet of your choice to generate the appropriate figure.
-
-
-**Table 5 [~7 minutes]**     
-Run the following command in the main repository folder:
-```
-make table_5
-```
-This will run the crash-recovery kernels for GPM benchmarks and measure their time. 
-
-Raw outputs will be kept in results folder in GPMbench_LibGPM/transactional, GPMBench_LibGPM/checkpointing and GPMBench_LibGPM/native.
-
-To obtain the report, run the following command in the main repository folder: 
-```
-make out_table5
-```
-
-Final normalized results will be outputted in the terminal and are also contained at reports/ in tab-separated format.
-
-
-**Figure 10 [~120 minutes]**     
-Run the following command in the main repository folder:
-```
-make figure_10
-```
-This will run the benchmarks for GPM and CAP and measure the run time. 
-
-Raw outputs will be kept in individual results folders that can be obtained in GPMbench_LibGPM/transactional, GPMBench_LibGPM/checkpointing and GPMBench_LibGPM/native.
-
-To obtain the report, run the following command in the main repository folder: 
-```
-make out_figure10
-```
-
-Final normalized results will be outputted in the terminal and are also contained at reports/ in tab-separated format. This can be imported into a spreadsheet of your choice to generate the appropriate figure.
-
-**Figure 11a [~5 minutes]**     
-Run the following command in the main repository folder:
-```
-make figure_11a
-```
-This will run the benchmarks for GPM with and without HCL and measure the run time. 
-
-Raw outputs will be kept in individual results folders that can be obtained in GPMbench_LibGPM/transactional, GPMBench_LibGPM/checkpointing and GPMBench_LibGPM/native.
-
-To obtain the report, run the following command in the main repository folder: 
-```
-make out_figure11a
-```
-
-Final normalized results will be outputted in the terminal and are also contained at reports/ in tab-separated format. This can be imported into a spreadsheet of your choice to generate the appropriate figure.
+Further details on how to replicate results can be found in the [README](/GPMBench/README.md) in the GPMBench folder.
 
 ## Source code
-The relevant source code for libGPM can be found in "[GPMBench_LibGPM/libgpm/include](/GPMBench_LibGPM/libgpm/include)".
-This folder contains 7 files, which we explain below:
-* libgpm.cuh - Contains the main implementation details of GPM, which allow for allocation/deallocation on PMEM.
-* libgpmlog.cuh - Contains the relevant implementation of logging (HCL and conventional) in GPM.
-* libgpmcp.cuh - Contains the relevant implementation of checkpointing in GPM.
-* bandwidth_analysis.cuh - Contains helper definitions used for bandwidth measurement.
-* gpm-annotations.cuh - Contains helper functions used to calculate write amplification.
-* change-ddio.h - Contains functions to turn DDIO off and on. [1]
-* gpm-helper.cuh - Contains common helper functions needed across other files.
-
-
-References: 
-[1] Characterizing and Optimizing Remote Persistent Memory with RDMA and NVM. Authors: Xingda Wei and Xiating Xie and Rong Chen and Haibo Chen and Binyu Zang. Published in: Usenix ATC'2021
+The relevant source code for libGPM can be found in "[LibGPM](/LibGPM/)".
+Further details on the source code and full API documentation can be found in the [README](/LibGPM/README.md) in the LibGPM folder.

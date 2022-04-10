@@ -1,6 +1,6 @@
 #pragma once
-#include "gpm-annotations.cuh"
 #include "gpm-helper.cuh"
+#include "change-ddio.h"
 #include <stdio.h>
 #include <assert.h>
 #include <unistd.h>
@@ -44,87 +44,34 @@ static __host__ void *gpm_map_file(const char *path, size_t &len, bool create)
 /*
  * gpm_unmap -- close and persist the file-mapped memory
  */
-static __host__ cudaError_t gpm_unmap(const char *path, void *addr, size_t len)
+static __host__ cudaError_t gpm_unmap(void *addr, size_t len)
 {
-    assert(Is_pmem(addr, len));
-    return close_gpm_file(path, addr, len);
+    return close_gpm_file(addr, len);
 }
 
 /*
- * gpm_drain -- wait for any PM stores to drain from HW buffers
+ * gpm_persist_begin -- start region where in-kernel PM accesses bypass DDIO
  */
-static __device__ void gpm_drain(void)
+static __host__ void gpm_persist_begin()
 {
-#ifdef NVM_ALLOC_GPU
-    __threadfence();
-    
-    #ifdef EMULATE_NVM
-        unsigned long long num = atomicExch_block((unsigned long long*)&nvm_write[(threadIdx.x + blockDim.x * blockIdx.x) / 32 % NUM_ENTRIES], 0);
-        // 150 cycle delay - 35 cycle atomic
-        num = (num + 31) / 32 * 115;
-        unsigned long long start = clock64();
-        while(clock64() - start < num);
-    #endif
-#else
-    // Drain caches
-    __threadfence_system();
-#endif
-    return;
+    ddio_off();
 }
 
 /*
- * gpm_flush -- flush cache for the given range
+ * gpm_persist_end -- end region where in-kernel PM accesses bypass DDIO
  */
-static __device__ void gpm_flush(const void *addr, size_t len)
+static __host__ void gpm_persist_end()
 {
-    assert(Is_pmem(addr, len));
-    
-    int i = 0;
-    
-    volatile DWORD *b = (DWORD *)((BYTE *)addr + i);
-    // Store elements at word granularity
-    for(; i + sizeof(DWORD) <= len && 
-        ((size_t)addr % sizeof(DWORD)) == 0
-        ; i += sizeof(DWORD), b += 1) {
-        // Store the value in addr to a volatile copy 
-        // of itself to guarantee cache flush
-        PMEM_WRITE_OP( (*b) = *((DWORD *)addr + (i / sizeof(DWORD))) , sizeof(DWORD) )
-    }
-    
-    volatile WORD *c = (WORD *)((BYTE *)addr + i);    
-    // Store elements at word granularity
-    for(; i + sizeof(WORD) <= len && 
-        ((size_t)addr % sizeof(WORD)) == 0
-        ; i += sizeof(WORD), c += 1) {
-        // Store the value in addr to a volatile copy 
-        // of itself to guarantee cache flush
-        PMEM_WRITE_OP( (*c) = *((WORD *)addr + (i / sizeof(WORD))) , sizeof(WORD) )
-    }
-    
-    volatile BYTE *d = ((BYTE *)addr + i);
-    // Store remaining elements at byte granularity
-    for(; i < len; i += sizeof(BYTE), d += 1) {
-        // Store the value in addr to a volatile copy 
-        // of itself to guarantee cache flush
-       PMEM_WRITE_OP( (*d) = *((BYTE *)addr + i) , sizeof(BYTE) )
-    }
+	ddio_on();
 }
 
 /*
  * gpm_persist -- make any changes to a range of gpm persistent
  */
-static __device__ void gpm_persist(const void *addr, size_t len)
+static __device__ void gpm_persist()
 {
-    //gpm_flush(addr, len);
-    gpm_drain();
-}
-
-/*
- * gpm_is_pmem -- return true if entire range is persistent memory
- */
-static __device__ __host__ int gpm_is_pmem(const void *addr, size_t len)
-{
-    return Is_pmem(addr, len);
+    // Drain caches
+    __threadfence_system();
 }
 
 /*
@@ -134,10 +81,7 @@ static __device__ cudaError_t gpm_memcpy_nodrain(void *gpmdest, const void *src,
 {
 #if defined(__CUDA_ARCH__)
     // Device code here
-    assert(Is_pmem(gpmdest, len));
-    
     int i = 0;
-    
     volatile DWORD *b = (DWORD *)((BYTE *)gpmdest + i);
     // Store elements at word granularity
     for(; i + sizeof(DWORD) <= len && 
@@ -146,7 +90,7 @@ static __device__ cudaError_t gpm_memcpy_nodrain(void *gpmdest, const void *src,
         ; i += sizeof(DWORD), b += 1) {
         // Store the value in addr to a volatile copy 
         // of itself to guarantee cache flush
-        PMEM_WRITE_OP( (*b) = *((DWORD *)src + (i / sizeof(DWORD))) , sizeof(DWORD) )
+        (*b) = *((DWORD *)src + (i / sizeof(DWORD)));
     }
     
     volatile WORD *c = (WORD *)((BYTE *)gpmdest + i);
@@ -156,19 +100,18 @@ static __device__ cudaError_t gpm_memcpy_nodrain(void *gpmdest, const void *src,
         ((size_t)src % sizeof(WORD)) == 0
         ; i += sizeof(WORD), c += 1) {
         // Store the value to a volatile copy to guarantee cache flush
-        PMEM_WRITE_OP( (*c) = *((WORD *)src + (i / sizeof(WORD))) , sizeof(WORD) )
+        (*c) = *((WORD *)src + (i / sizeof(WORD)));
     }
     
     volatile BYTE *d = ((BYTE *)gpmdest + i);
     // Store remaining elements at byte granularity
     for(; i < len; i += sizeof(BYTE), d += 1) {
         // Store the value to a volatile copy to guarantee cache flush
-        PMEM_WRITE_OP( (*d) = *((BYTE *)src + i) , sizeof(BYTE) )
+        (*d) = *((BYTE *)src + i);
     }
     return cudaSuccess;
 #else
     // Host code here
-    assert(Is_pmem(gpmdest, len));
     return cudaMemcpy(gpmdest, src, len, kind);
 #endif
 }
@@ -179,9 +122,7 @@ static __device__ cudaError_t gpm_memcpy_nodrain(void *gpmdest, const void *src,
 static __device__ cudaError_t gpm_memset_nodrain(void *gpmdest, unsigned char value, size_t len)
 {
 #if defined(__CUDA_ARCH__)
-    // Device code here
-    assert(Is_pmem(gpmdest, len));
-    
+    // Device code here    
     int i = 0;
     
     // Can only set at word granularity for 0, as memset is supposed to copy byte-by-byte
@@ -194,7 +135,7 @@ static __device__ cudaError_t gpm_memset_nodrain(void *gpmdest, unsigned char va
         ; i += sizeof(DWORD), b += 1) {
             // Store the value in addr to a volatile copy 
             // of itself to guarantee cache flush
-            PMEM_WRITE_OP( (*b) = value , sizeof(DWORD) )
+            (*b) = value;
         }
 
         volatile WORD *c = (WORD *)((BYTE *)gpmdest + i);
@@ -203,7 +144,7 @@ static __device__ cudaError_t gpm_memset_nodrain(void *gpmdest, unsigned char va
         ((size_t)gpmdest % sizeof(WORD)) == 0
         ; i += sizeof(WORD), c += 1) {
             // Store the value to a volatile copy to guarantee cache flush
-            PMEM_WRITE_OP( (*c) = value , sizeof(WORD) )
+            (*c) = value;
         }
     }
     
@@ -211,12 +152,11 @@ static __device__ cudaError_t gpm_memset_nodrain(void *gpmdest, unsigned char va
     // Store remaining elements at byte granularity
     for(; i < len; i += sizeof(BYTE), d += 1) {
         // Store the value to a volatile copy to guarantee cache flush
-        PMEM_WRITE_OP( (*d) = value , sizeof(BYTE) )
+        (*d) = value;
     }
     return cudaSuccess;
 #else
     // Host code here
-    assert(Is_pmem(gpmdest, len));
     return cudaMemset(gpmdest, value, len);
 #endif
 }
@@ -227,7 +167,7 @@ static __global__ void gpm_memcpyKernel(void *gpmdest, const void *src, size_t l
     for(int i = TID * 4; i < len; i += blockDim.x * gridDim.x * 4) {
         gpm_memcpy_nodrain((char *)gpmdest + i, (char *)src + i, min((size_t)4, len - i), kind);
     }
-    gpm_drain();
+    gpm_persist();
 }
 
 /*
@@ -238,11 +178,10 @@ static __device__ __host__ cudaError_t gpm_memcpy(void *gpmdest, const void *src
 #if defined(__CUDA_ARCH__)
     // Device code here
     gpm_memcpy_nodrain(gpmdest, src, len, kind);
-    gpm_drain();
+    gpm_persist();
     return cudaSuccess;
 #else
     // Host code here
-    assert(Is_pmem(gpmdest, len));
     // If data is a host variable, move to device first
     if(kind == cudaMemcpyHostToDevice || cudaMemcpyHostToHost) {
         void *d_src;
@@ -272,7 +211,7 @@ static __global__ void gpm_memsetKernel(void *gpmdest, unsigned char c, size_t l
     int TID = threadIdx.x + blockIdx.x * blockDim.x;
     for(int i = TID * 4; i < len; i += blockDim.x * gridDim.x * 4)
         gpm_memset_nodrain((char *)gpmdest + i, c, min((size_t)4, len - i));
-    gpm_drain();
+    gpm_persist();
 }
 /*
  * gpm_memset -- memset to gpm
@@ -282,11 +221,10 @@ static __device__ __host__ cudaError_t gpm_memset(void *gpmdest, unsigned char c
 #if defined(__CUDA_ARCH__)
     // Device code here
     gpm_memset_nodrain(gpmdest, c, len);
-    gpm_drain();
+    gpm_persist();
     return cudaSuccess;
 #else
     // Host code here
-    assert(Is_pmem(gpmdest, len));
     gpm_memsetKernel<<<((len + 3) / 4 + 1023) / 1024, 1024>>> (gpmdest, c, len);
     return cudaGetLastError();
 #endif
@@ -323,35 +261,5 @@ static __device__ void vol_memcpy(void *dest, const void *src, size_t len)
     for(; i < len; i += sizeof(BYTE), d += 1) {
         // Store the value to a volatile copy to guarantee cache flush
         (*d) = *((BYTE *)src + i);
-    }
-}
-
-static __host__ long long pmem_write(int fd, const void *buf, size_t count, off64_t offset) 
-{
-    long long counter = 0;
-    while(count > 0) {
-        long long write_len = min(SSIZE_MAX, count);
-        ssize_t ret = pwrite(fd, (void*)((char*)buf + counter), write_len, offset + counter);
-        if(ret < 0)
-            return ret;
-        counter += ret;
-        count -= ret;
-    }
-    return counter;
-}
-
-static __host__ void pmem_mt_persist(void *addr, size_t size) 
-{
-    char *ptr = getenv("PMEM_THREADS");
-    size_t threads;
-    if(ptr != NULL)
-        threads = atoi(ptr);
-    else
-        threads = 1;
-    //printf("Using %d threads to persist\n", threads);
-    size_t GRAN = (size + threads - 1) / threads;
-    #pragma omp parallel for num_threads(threads)
-    for(size_t i = 0; i < threads; ++i) {
-        pmem_persist((char*)addr + i * GRAN, min(GRAN, size - i * GRAN));
     }
 }

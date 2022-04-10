@@ -179,11 +179,3 @@ static void ddio_off() {
 }
 
 #endif
-/*
-int main(void)
-{
-  ddio_on(); 
-  ddio_off(); 
-  return 0;
-}
-*/

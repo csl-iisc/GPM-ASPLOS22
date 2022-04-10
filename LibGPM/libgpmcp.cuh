@@ -165,7 +165,7 @@ static __host__ gpmcp *gpmcp_open(const char *path)
 
 static __host__ void gpmcp_close(gpmcp *cp)
 {
-    gpm_unmap(cp->path, cp->cp, cp->tot_size);
+    gpm_unmap(cp->cp, cp->tot_size);
     cudaFreeHost(cp->node_addr);
     cudaFreeHost(cp->node_size);
     cudaFreeHost(cp->part_byte_size);
@@ -208,7 +208,7 @@ static __global__ void checkpointKernel(void *start, void *addr, size_t size)
             (char *)addr + offset, 
             min((size_t)8, size - offset), cudaMemcpyDeviceToHost);
     
-    gpm_drain();
+    gpm_persist();
 }
 static __global__ void checkpointKernel_wdp(void *start, void *addr, size_t size)
 {
@@ -224,32 +224,6 @@ static __global__ void checkpointKernel_wdp(void *start, void *addr, size_t size
 
 static __host__ long long gpmcp_checkpoint(gpmcp *cp, long long partition)
 {
-/*#if defined(__CUDA_ARCH__)
-    // Device code
-    size_t start = cp->part_byte_size[partition];
-    
-    PMEM_READ_OP( char ind = cp->index[partition] , sizeof(char) )
-    ind = (ind != 0 ? 0 : 1);
-    PMEM_READ_OP( size_t cp_size = cp->cp->size , sizeof(size_t) )
-    start += ind * cp_size;
-    
-    long long elem_size = cp->part_elem_size[partition];
-    PMEM_READ_OP( long long elems = cp->cp->elements , sizeof(long long) )
-    for(long long i = 0; i < elem_size; ++i)
-    {
-        if(start >= 2 * cp_size)
-            return -1;
-        void *addr = (long long *)cp->node_addr[partition * elems + i];
-        size_t size = cp->node_size[partition * elems + i];
-        gpm_memcpy_nodrain((char *)cp->start + start, addr, size, cudaMemcpyDeviceToDevice); 
-        start += cp->node_size[partition * elems + i];
-    }
-    gpm_drain();
-    // Update index once complete
-    PMEM_READ_WRITE_OP( cp->index[partition] ^= 1; , sizeof(char) )
-    gpm_drain();
-    return 0;
-#else*/
 #ifdef GPM_WDP
     char *ptr = getenv("PMEM_THREADS");
     size_t pm_threads;
@@ -275,11 +249,10 @@ static __host__ long long gpmcp_checkpoint(gpmcp *cp, long long partition)
         long long blocks = 1;
         // Have each threadblock persist a single element
         // Threads within a threadblock persist at 4-byte offsets
-#ifdef NVM_ALLOC_CPU
-        checkpointKernel<<<blocks, threads>>>((void*)((char*)cp->start + start), addr, size);
-#endif
 #ifdef NVM_ALLOC_GPU
         checkpointKernel<<<120, threads>>>((void*)((char*)cp->start + start), addr, size);
+#else
+		checkpointKernel<<<blocks, threads>>>((void*)((char*)cp->start + start), addr, size);
 #endif 
     	cudaDeviceSynchronize();
 #ifdef CHECKPOINT_TIME
@@ -297,9 +270,6 @@ static __host__ long long gpmcp_checkpoint(gpmcp *cp, long long partition)
 #endif 
         element_offset += size + 128 - (size % 128);
     }
-#ifdef GPM_WDP
-    //pmem_drain(); 
-#endif 
 	auto start_time = std::chrono::high_resolution_clock::now();
     // Update index
     cp->index[partition] ^= 1;
@@ -317,12 +287,12 @@ static __device__ long long gpmcp_checkpoint_start(gpmcp *cp, long long partitio
     // Device code
     size_t start = cp->part_byte_size[partition];
     
-    PMEM_READ_OP( char ind = cp->index[partition] , sizeof(char) )
+    char ind = cp->index[partition];
     ind = (ind != 0 ? 0 : 1);
-    PMEM_READ_OP( size_t cp_size = cp->cp->size , sizeof(size_t) )
+    size_t cp_size = cp->cp->size;
     start += ind * cp_size;
     
-    PMEM_READ_OP( long long elems = cp->cp->elements , sizeof(long long) )
+    long long elems = cp->cp->elements;
     for(long long i = 0; i < element; ++i)
         start += cp->node_size[partition * elems + i];
     
@@ -339,12 +309,12 @@ static __device__ long long gpmcp_checkpoint_value(gpmcp *cp, long long partitio
     // Device code
     size_t start = cp->part_byte_size[partition];
     
-    PMEM_READ_OP( char ind = cp->index[partition] , sizeof(char) )
+    char ind = cp->index[partition];
     ind = (ind != 0 ? 0 : 1);
-    PMEM_READ_OP( size_t cp_size = cp->cp->size , sizeof(size_t) )
+    size_t cp_size = cp->cp->size;
     start += ind * cp_size;
     
-    PMEM_READ_OP( long long elems = cp->cp->elements , sizeof(long long) )
+    long long elems = cp->cp->elements;
     for(long long i = 0; i < element; ++i)
         start += cp->node_size[partition * elems + i];
     
@@ -358,8 +328,8 @@ static __device__ long long gpmcp_checkpoint_value(gpmcp *cp, long long partitio
 static __device__ long long gpmcp_checkpoint_finish(gpmcp *cp, long long partition)
 {
     // Update index once complete
-    PMEM_READ_WRITE_OP( cp->index[partition] ^= 1; , sizeof(char) )
-    gpm_drain();
+    cp->index[partition] ^= 1;
+    gpm_persist();
     return 0;
 }
 
