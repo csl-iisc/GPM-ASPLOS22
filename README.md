@@ -7,8 +7,13 @@ GPMBench comprises of 9 benchmarks categorized as transactional, native and chec
 LibGPM contains the source of our CUDA library which provides a user-friendly interface for GPU-accelerated recoverable applications. 
 
 
-For full details refer to our paper:
-- Shweta Pandey, Aditya K Kamath, and Arkaprava Basu. 2022. **GPM: Leveraging Persistent Memory from a GPU.** In _Proceedings of the 27th ACM International Conference on Architectural Support for Programming Languages and Operating Systems (ASPLOS '22)._ DOI:https://doi.org/10.1145/3503222.3507758 [[Paper]](https://www.csa.iisc.ac.in/~arkapravab/papers/ASPLOS22_GPM.pdf) [[Video]](https://www.youtube.com/watch?v=WER5mZPYFSc)
+For full details refer to our paper: [[Paper]](https://www.csa.iisc.ac.in/~arkapravab/papers/ASPLOS22_GPM.pdf)  [[Video]](https://www.youtube.com/watch?v=WER5mZPYFSc)
+<pre>
+<b>GPM: Leveraging Persistent Memory from a GPU</b>
+Shweta Pandey, Aditya K Kamath, and Arkaprava Basu
+<i>27th ACM International Conference on Architectural Support for Programming Languages and Operating Systems (ASPLOS), 2022</i>
+DOI: https://doi.org/10.1145/3503222.3507758
+</pre>
 
 ## Setting up PMEM [~10 minutes]
 This section explains how to setup your NVDIMM config to be run in app direct mode. This also makes sure that all the PMEM strips are interleaved to attain maximum bandwidth. 
